@@ -9,8 +9,9 @@ The 5G AAS Python have a similar structure that the basyx python sdk github. The
 | File                         | Content                                                                                                                     |
 |---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | AASsubmodels.py                     | It will be the different classes that will be present in the python AAS created. This script inherits from the Basyx-Python-SDK classes.                |
-| NW_5G_AAS.py                           | Script that will read the 5G_Network_AAS.aasx model and will create the 5G Network AAS model in python.                                                                                                         |
-| UE_5G_AAS.py   | Script that will read the 5G_UE_AAS.aasx model and will create the 5G UE AAS model in python.
+| NW_5G_AAS.py                           | Script that will read the 5G_Network_AAS.aasx model and will create the 5G Network AAS model in python. It Should be executed from the basyx/aas folder.                                                                                                        |
+| UE_5G_AAS.py   | Script that will read the 5G_UE_AAS.aasx model and will create the 5G UE AAS model in python. It Should be executed from the basyx/aas folder. 
+| ExampleUse.py   | Script that will import the AAS createds in NW_5G_AAS.py and UE_5G_AAS.py and will show some examples of how they can be used. It Should be executed from the basyx/aas folder. 
 | 5G_Network_AAS.aasx                           | 5G Network AAS model in an AASX file from AASX Package Explorer.                                                                                                         |
 | UE_5G_AAS.aasx  | 5G UE AAS model in an AASX file from AASX Package Explorer. 
 
