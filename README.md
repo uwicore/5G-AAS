@@ -2,9 +2,9 @@
 The 1st version of 5G AAS Python offers the python models for 5G UE AAS and 5G Network AAS. These python models are programmed using the Basyx-Python-SDK github. Previously, AAS models in .aasx format have been created using AASX Package Explorer github.
 ## Features
 Reading AASX package files to create AAS objects in python.
-Creating 5G UE AAS and 5G Network AAS templates in python following the [paper] model. Although we can create various 5G UE AAS, only one 5G Network AAS can be created.
+Creating 5G UE AAS and 5G Network AAS templates in python following the [paper] model. Despite being able to create various 5G UE AAS instances, only one 5G Network AAS can be created.
 ## Project Structure
-The 5G AAS Python have a similar structure that the basyx python sdk github. The active folder of the project is basyx/aas, where we can find the AAS models programming. In this folder we can find the 5G_UE_AAS.aasx and the 5G_Network_AAS.aasx models as templates. Despite we provide the 5GAAS.aasx model which contains a 5G Network and two 5G UEs together.
+The 5G AAS Python have a similar structure that the basyx python sdk github. The active folder of the project is basyx/aas, where we can find the AAS models programming. In this folder we can find the 5G_UE_AAS.aasx and the 5G_Network_AAS.aasx models as templates. 
 
 | File                         | Content                                                                                                                     |
 |---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
