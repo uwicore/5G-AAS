@@ -38,8 +38,7 @@ nameplate_IRI= "https://example.com/ids/sm/8342_3111_1042_3026"
 identification_IRI= "https://example.com/ids/sm/1074_5111_1042_7646"
 documentation_IRI= "https://example.com/ids/sm/5542_3111_1042_4014"
 service_IRI= "https://example.com/ids/sm/4572_3111_1042_7525"
-technicalData_IRI= "https://example.com/ids/sm/5372_3111_1042_7577"
-simCard_IRI= "https://example.com/ids/sm/6514_0160_4032_8416"
+technicalData_IRI= "https://example.com/ids/sm/5372_3111_1042_7577"                
 ue5GIdentification_IRI= "https://example.com/ids/sm/6092_3111_1042_0266"
 networkAccessRestrictions_IRI= "https://example.com/ids/sm/5282_3111_1042_5880"
 ueAttachAndConnectionStatus_IRI= "https://example.com/ids/sm/4382_3111_1042_2974"
@@ -48,7 +47,8 @@ location_IRI= "https://example.com/ids/sm/0092_3111_1042_1275"
 ue5GDataSheet_IRI= "https://example.com/ids/sm/7423_4122_4042_5354"
 asset_idShort= "UE_5G"
 AAS_idShort= "AAS_UE_5G"
-ue1_IRIS=[nameplate_IRI, identification_IRI, documentation_IRI, service_IRI, technicalData_IRI, simCard_IRI, ue5GIdentification_IRI, networkAccessRestrictions_IRI,ueAttachAndConnectionStatus_IRI,qosMonitoring_IRI, location_IRI, ue5GDataSheet_IRI, asset_idShort,AAS_idShort]
+#CAMBIAR UE1 IRIS Y LO OTRO PORQUE SE ELIMINA SIM CARD
+ue1_IRIS=[nameplate_IRI, identification_IRI, documentation_IRI, service_IRI, technicalData_IRI, ue5GDataSheet_IRI, ue5GIdentification_IRI, networkAccessRestrictions_IRI,ueAttachAndConnectionStatus_IRI,qosMonitoring_IRI, location_IRI,  asset_idShort,AAS_idShort]
 
 
 #This is for a single 5G UE AAS, if you will use more than one you need to use the code commented below
@@ -56,7 +56,7 @@ ue1_IRIS=[nameplate_IRI, identification_IRI, documentation_IRI, service_IRI, tec
 for obj in new_object_store:
     #First the asset
     if isinstance(obj, Asset):
-        if obj.id_short==ue1_IRIS[12]: 
+        if obj.id_short==ue1_IRIS[11]: 
             ue5G=UE5G(obj.kind, obj.identification, obj.id_short, obj.category, obj.description)
 
 for obj in new_object_store:
@@ -194,25 +194,58 @@ for obj in new_object_store:
                                                                                                 elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
             technicalData=TechnicalData(general_info,prod_class_system,technicalProperties,further_info,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)          
 
-        elif(obj.identification.id==ue1_IRIS[5]):  #SimCard
-            for elemento_contenido in obj:
-                if elemento_contenido.id_short=="IMSI": imsi=elemento_contenido
-                if elemento_contenido.id_short=="ICCID": iccid=elemento_contenido
-                if elemento_contenido.id_short=="PIN": pin=elemento_contenido
-                if elemento_contenido.id_short=="SPN": spn=elemento_contenido
-                if elemento_contenido.id_short=="AuthenticationKey": authenticationkey=elemento_contenido
-            simCard=SIMCard(imsi,iccid,pin,spn,authenticationkey,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)              
+        elif(obj.identification.id==ue1_IRIS[5]):   #UE5GDatasheet
+            for elemento_contenido in obj:            
+                if elemento_contenido.id_short=="OperatingBands": operatingBands=elemento_contenido
+                if elemento_contenido.id_short=="UEChannelBandwidth":
+                    for elemento_ref in elemento_contenido.value:
+                        if elemento_ref.id_short=="MaximumTransmissionBandwidth": 
+                            maxtxbw=elemento_ref
+                            ueChannelBandwidth=UEChannelBandwidth(maxtxbw, elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
+                                                                        elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
+                if elemento_contenido.id_short=="DuplexMode": duplexMode=elemento_contenido
+                if elemento_contenido.id_short=="TransmitterCharacteristics": 
+                    for elemento_ref in elemento_contenido.value:                                
+                        if elemento_ref.id_short=="UEMaximumOutputPower": ueMaxOutPower=elemento_ref
+                        if elemento_ref.id_short=="OutputPowerDynamics":
+                            for elemento_ref_2 in elemento_ref.value:
+                                if elemento_ref_2.id_short=="MinimumOutputPower": minOutPower=elemento_ref_2
+                                if elemento_ref_2.id_short=="TransmitOFFPower": 
+                                    transmitOFFPower=elemento_ref_2
+                                    output_power_dynamics=OutputPowerDynamics(minOutPower,transmitOFFPower,elemento_ref.id_short,elemento_ref.value, elemento_ref.category, 
+                                                                        elemento_ref.description, elemento_ref.parent, elemento_ref.semantic_id, elemento_ref.qualifier, elemento_ref.kind)
+                        if elemento_ref.id_short=="TransmitSignalQuality": transmitSignalQuality=elemento_ref
+                        if elemento_ref.id_short=="OutputRFSpectrumEmissions": outputRFSprectrumEmissions=elemento_ref
+                        if elemento_ref.id_short=="NumberOfAntennas": numberOfAntennas=elemento_ref
+                        if elemento_ref.id_short=="NumberOfLayers": numberOfLayers=elemento_ref 
+                        if elemento_ref.id_short=="MaximumDataUplink": maximumDataUplink=elemento_ref 
+                    transmitterCharacteristics=TransmitterCharacteristics(ueMaxOutPower,output_power_dynamics,transmitSignalQuality,outputRFSprectrumEmissions,numberOfAntennas,numberOfLayers,maximumDataUplink,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
+                                                                        elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
+                if elemento_contenido.id_short=="ReceiverCharacteristics": 
+                    for elemento_ref in elemento_contenido.value:                                
+                        if elemento_ref.id_short=="ReferenceSensitivityPowerLevel": refsenspowerlvl=elemento_ref
+                        if elemento_ref.id_short=="MaximumInputLevel": maxInputLevel=elemento_ref
+                        if elemento_ref.id_short=="AdjacentChannelSelectivity": adjacentChannelSelectivity=elemento_ref
+                        if elemento_ref.id_short=="NumberOfAntennas": numberOfAntennas=elemento_ref
+                        if elemento_ref.id_short=="NumberOfLayers": numberOfLayers=elemento_ref
+                        if elemento_ref.id_short=="MaximumDataDownlink": maximumDataDownlink=elemento_ref  
+                    receiverCharacteristics=ReceiverCharacteristics(refsenspowerlvl,maxInputLevel,adjacentChannelSelectivity,numberOfAntennas,numberOfLayers, maximumDataDownlink,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
+                                                                        elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
+            ue5GDatasheet=UE5GDataSheet(operatingBands,ueChannelBandwidth,duplexMode,transmitterCharacteristics,receiverCharacteristics,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
 
         elif(obj.identification.id==ue1_IRIS[6]):  #Ue5GIdentification
             for elemento_contenido in obj:
-                if elemento_contenido.id_short=="PermanentEquipmentIdentifier": pei=elemento_contenido
-                if elemento_contenido.id_short=="UeIdentityGPSI": gpsi=elemento_contenido
+                if elemento_contenido.id_short=="PEI": pei=elemento_contenido
+                if elemento_contenido.id_short=="UEIdentityGPSI": gpsi=elemento_contenido
                 if elemento_contenido.id_short=="AuthenticationCertificate": authenticationCertificate=elemento_contenido
                 if elemento_contenido.id_short=="CertificateStatus": certificateStatus=elemento_contenido
                 if elemento_contenido.id_short=="IPAddress": ipAddress=elemento_contenido
                 if elemento_contenido.id_short=="MacAddress": macAddress=elemento_contenido
-                if elemento_contenido.id_short=="IMEI": imei=elemento_contenido
-            ue5GIdentification=Ue5GIdentification(pei, gpsi, authenticationCertificate,certificateStatus,ipAddress, macAddress, imei,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
+                if elemento_contenido.id_short=="IMSI": imsi=elemento_contenido
+                if elemento_contenido.id_short=="ICCID": iccid=elemento_contenido
+                if elemento_contenido.id_short=="PIN": pin=elemento_contenido
+                if elemento_contenido.id_short=="SPN": spn=elemento_contenido
+            ue5GIdentification=Ue5GIdentification(pei, gpsi, authenticationCertificate,certificateStatus,ipAddress, macAddress, imsi, spn, pin, iccid, obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
 
         elif(obj.identification.id==ue1_IRIS[7]):  #NetworkAccessRestrictions
             for elemento_contenido in obj:
@@ -232,10 +265,8 @@ for obj in new_object_store:
 
         elif(obj.identification.id==ue1_IRIS[8]):  #UeAttachAndConnectionStatus
             for elemento_contenido in obj:  
-                if elemento_contenido.id_short=="UeAttached": ue_attached=elemento_contenido
+                if elemento_contenido.id_short=="UEAttached": ue_attached=elemento_contenido
                 if elemento_contenido.id_short=="RRCState": rrc_state=elemento_contenido
-                if elemento_contenido.id_short=="Technology": technology=elemento_contenido
-                if elemento_contenido.id_short=="CellID": cellID=elemento_contenido
                 if isinstance(elemento_contenido, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):       
                     for elemento_ref in elemento_contenido.value:                                                                                                        
                         if isinstance(elemento_ref, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):
@@ -251,7 +282,20 @@ for obj in new_object_store:
                                                 if elemento_ref_4.id_short=="QFI": qfi= elemento_ref_4
                                                 if isinstance(elemento_ref_4, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):
                                                     for elemento_ref_5 in elemento_ref_4.value: 
-                                                        if isinstance(elemento_ref_5, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):
+                                                        if elemento_ref_4.id_short=="RRMParameters":
+                                                                    if elemento_ref_5.id_short=="MCSTable": mcstable=elemento_ref_5
+                                                                    if elemento_ref_5.id_short=="CQITable": cqitable=elemento_ref_5
+                                                                    if elemento_ref_5.id_short=="TargetBLER": target_bler=elemento_ref_5
+                                                                    if elemento_ref_5.id_short=="SchedulingType": scheduling_type=elemento_ref_5
+                                                                    if elemento_ref_5.id_short=="SchedulingPolicy": scheduling_policy=elemento_ref_5
+                                                                    if elemento_ref_5.id_short=="HARQMaximumNumberOfRetransmissions": harq_max_num_retransmissions=elemento_ref_5
+                                                                    if elemento_ref_5.id_short=="KNumber": k_number=elemento_ref_5
+                                                                    if elemento_ref_5.id_short=="PowerControlPmax": 
+                                                                        power_control_pmax=elemento_ref_5
+                                                                        rrm_parameters=RRMParameters(mcstable,cqitable,target_bler, scheduling_type,scheduling_policy, harq_max_num_retransmissions,k_number, power_control_pmax, elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
+                                                                                        elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
+
+                                                        if elemento_ref_4.id_short=="QosProfileRequested":                                                            
                                                             for elemento_ref_6 in elemento_ref_5.value: 
                                                                 if elemento_ref_6.id_short=="QosIdentifier": QosIdentifier=elemento_ref_6
                                                                 if elemento_ref_6.id_short=="ARP": arp=elemento_ref_6
@@ -265,7 +309,7 @@ for obj in new_object_store:
                                                                 if elemento_ref_6.id_short=="AggregateBitRates": 
                                                                     AggregateBitRates=elemento_ref_6
                                                                     
-                                                                    qos_parameters=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
+                                                                    qos_parameters_r=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
                                                                                                 elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
                                                                                                 elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
                                                                     
@@ -277,85 +321,132 @@ for obj in new_object_store:
                                                                 if elemento_ref_6.id_short=="MaximumDataBurstVolume": 
                                                                     MaximumDataBurstVolume=elemento_ref_6
                                                                     
-                                                                    qos_characteristics=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
+                                                                    qos_characteristics_r=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
+                                                                                                elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
+                                                                                                elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
+
+
+                                                            if elemento_ref_5.id_short=="AlternativeQosProfiles":
+                                                                if elemento_ref_6.id_short=="AlternativeQosProfile01":
+                                                                    for elemento_ref_7 in elemento_ref_6:  
+                                                                        if elemento_ref_7.id_short=="QosParameters": qosParameters=elemento_ref_7
+                                                                        for elemento_ref_8 in elemento_ref_7.value: 
+                                                                            if elemento_ref_8.id_short=="QosIdentifier": QosIdentifier=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="ARP": arp=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="RQA": rqa=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="NotificationControl": notificationControl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="GFBRUL": gfbr_ul=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="GFBRDL": gfbr_dl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MFBRUL": mfbr_ul=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MFBRDL": mfbr_dl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="AggregateBitRates": 
+                                                                                AggregateBitRates=elemento_ref_8
+                                                                                
+                                                                                qos_parameters=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
+                                                                                                            elemento_ref_7.id_short,elemento_ref_7.value, elemento_ref_7.category, elemento_ref_7.description,
+                                                                                                            elemento_ref_7.parent, elemento_ref_7.semantic_id, elemento_ref_7.qualifier, elemento_ref_7.kind)
+
+                                                                        if elemento_ref_7.id_short=="QosCharacteristics": qosCharacteristics=elemento_ref_7
+                                                                        for elemento_ref_8 in elemento_ref_7.value:
+                                                                            if elemento_ref_8.id_short=="ResourceType": ResourceType=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PriorityLevel": PriorityLevel=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PacketDelayBudget": PacketDelayBudget=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PacketErrorRate": PacketErrorRate=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="AveragingWindow": AveragingWindow=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MaximumDataBurstVolume": 
+                                                                                MaximumDataBurstVolume=elemento_ref_8
+                                                                                
+                                                                                qos_characteristics=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
+                                                                                                            elemento_ref_7.id_short,elemento_ref_7.value, elemento_ref_7.category, elemento_ref_7.description,
+                                                                                                            elemento_ref_7.parent, elemento_ref_7.semantic_id, elemento_ref_7.qualifier, elemento_ref_7.kind)
+                                                                                
+                                                                                alternativeQosProfile=AlternativeQosProfile(qos_parameters,qos_characteristics,elemento_ref_6.id_short,elemento_ref_6.value, elemento_ref_6.category, elemento_ref_6.description,
+                                                                                                            elemento_ref_6.parent, elemento_ref_6.semantic_id, elemento_ref_6.qualifier, elemento_ref_6.kind)
+                                                                            
+                                                                                alternativeQosProfileList=AlternativeQosProfiles(elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
+                                                                                                            elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
+                                                                                alternativeQosProfileList.add_alternative_qos_profile(alternativeQosProfile)   
+
+                                                                    qos_profile_requested=QosProfile(qos_parameters_r,qos_characteristics_r, alternativeQosProfileList, elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
+                                                                                        elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
+
+                                                        if elemento_ref_4.id_short=="QosProfileGuaranteed":                                                            
+                                                            for elemento_ref_6 in elemento_ref_5.value: 
+                                                                if elemento_ref_6.id_short=="QosIdentifier": QosIdentifier=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="ARP": arp=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="RQA": rqa=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="NotificationControl": notificationControl=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="GFBRUL": gfbr_ul=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="GFBRDL": gfbr_dl=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="MFBRUL": mfbr_ul=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="MFBRDL": mfbr_dl=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="AggregateBitRates": 
+                                                                    AggregateBitRates=elemento_ref_6
+                                                                    
+                                                                    qos_parameters_g=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
                                                                                                 elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
                                                                                                 elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
                                                                     
-                                                                    qos_profile=QosProfile(qos_parameters,qos_characteristics,elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
+                                                                if elemento_ref_6.id_short=="ResourceType": ResourceType=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="PriorityLevel": PriorityLevel=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="PacketDelayBudget": PacketDelayBudget=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="PacketErrorRate": PacketErrorRate=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="AveragingWindow": AveragingWindow=elemento_ref_6
+                                                                if elemento_ref_6.id_short=="MaximumDataBurstVolume": 
+                                                                    MaximumDataBurstVolume=elemento_ref_6
+                                                                    
+                                                                    qos_characteristics_g=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
+                                                                                                elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
+                                                                                                elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
+                                                            if elemento_ref_5.id_short=="AlternativeQosProfiles":
+                                                                if elemento_ref_6.id_short=="AlternativeQosProfile01":
+                                                                    for elemento_ref_7 in elemento_ref_6:  
+                                                                        if elemento_ref_7.id_short=="QosParameters": qosParameters=elemento_ref_7
+                                                                        for elemento_ref_8 in elemento_ref_7.value: 
+                                                                            if elemento_ref_8.id_short=="QosIdentifier": QosIdentifier=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="ARP": arp=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="RQA": rqa=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="NotificationControl": notificationControl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="GFBRUL": gfbr_ul=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="GFBRDL": gfbr_dl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MFBRUL": mfbr_ul=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MFBRDL": mfbr_dl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="AggregateBitRates": 
+                                                                                AggregateBitRates=elemento_ref_8
+                                                                                
+                                                                                qos_parameters=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
+                                                                                                            elemento_ref_7.id_short,elemento_ref_7.value, elemento_ref_7.category, elemento_ref_7.description,
+                                                                                                            elemento_ref_7.parent, elemento_ref_7.semantic_id, elemento_ref_7.qualifier, elemento_ref_7.kind)
+
+                                                                        if elemento_ref_7.id_short=="QosCharacteristics": qosCharacteristics=elemento_ref_7
+                                                                        for elemento_ref_8 in elemento_ref_7.value:
+                                                                            if elemento_ref_8.id_short=="ResourceType": ResourceType=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PriorityLevel": PriorityLevel=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PacketDelayBudget": PacketDelayBudget=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PacketErrorRate": PacketErrorRate=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="AveragingWindow": AveragingWindow=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MaximumDataBurstVolume": 
+                                                                                MaximumDataBurstVolume=elemento_ref_8
+                                                                                
+                                                                                qos_characteristics=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
+                                                                                                            elemento_ref_7.id_short,elemento_ref_7.value, elemento_ref_7.category, elemento_ref_7.description,
+                                                                                                            elemento_ref_7.parent, elemento_ref_7.semantic_id, elemento_ref_7.qualifier, elemento_ref_7.kind)
+                                                                                
+                                                                                alternativeQosProfile=AlternativeQosProfile(qos_parameters,qos_characteristics,elemento_ref_6.id_short,elemento_ref_6.value, elemento_ref_6.category, elemento_ref_6.description,
+                                                                                                            elemento_ref_6.parent, elemento_ref_6.semantic_id, elemento_ref_6.qualifier, elemento_ref_6.kind)
+                                                                            
+                                                                                alternativeQosProfileList=AlternativeQosProfiles(elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
+                                                                                                            elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
+                                                                                alternativeQosProfileList.add_alternative_qos_profile(alternativeQosProfile)   
+
+                                                                        
+                                                                    qos_profile_guaranteed=QosProfile(qos_parameters_g,qos_characteristics_g, alternativeQosProfileList, elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
                                                                                         elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
 
-                                                                if elemento_ref_5.id_short=="Uplink":
-                                                                    if elemento_ref_6.id_short=="MCSTable": mcstable_ul=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="CQITable": cqitable_ul=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="TargetBLER": target_bler_ul=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="SchedulingType": scheduling_type_ul=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="SchedulingPolicy": scheduling_policy_ul=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="HARQMaximumNumberOfRetransmissions": harq_max_num_retransmissions_ul=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="KNumber": k_number_ul=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="PowerControlPmax": 
-                                                                        power_control_pmax_ul=elemento_ref_6
-                                                                        uplink=Uplink(mcstable_ul,cqitable_ul,target_bler_ul, scheduling_type_ul,scheduling_policy_ul, harq_max_num_retransmissions_ul,k_number_ul, power_control_pmax_ul,
-                                                                                    elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
-                                                                                    elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
-
-                                                                if elemento_ref_5.id_short=="Downlink":
-                                                                    if elemento_ref_6.id_short=="MCSTable": mcstable_dl=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="CQITable": cqitable_dl=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="TargetBLER": target_bler_dl=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="SchedulingType": scheduling_type_dl=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="SchedulingPolicy": scheduling_policy_dl=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="HARQMaximumNumberOfRetransmissions": harq_max_num_retransmissions_dl=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="KNumber": k_number_dl=elemento_ref_6
-                                                                    if elemento_ref_6.id_short=="PowerControlPmax": 
-                                                                        power_control_pmax_dl=elemento_ref_6
-                                                                        downlink=Downlink(mcstable_ul,cqitable_ul,target_bler_ul, scheduling_type_ul,scheduling_policy_ul, harq_max_num_retransmissions_ul,k_number_ul, power_control_pmax_ul,
-                                                                                    elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
-                                                                                    elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
-                                                                       
-                                                                        rrm_parameters=RRMParameters(uplink,downlink, elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
-                                                                                        elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
-                                                            
-                                                                if elemento_ref_5.id_short=="AlternativeQosProfile01":
-                                                                    if elemento_ref_6.id_short=="QosParameters": qosParameters=elemento_ref_6
-                                                                    for elemento_ref_7 in elemento_ref_6.value: 
-                                                                        if elemento_ref_7.id_short=="QosIdentifier": QosIdentifier=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="ARP": arp=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="RQA": rqa=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="NotificationControl": notificationControl=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="GFBRUL": gfbr_ul=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="GFBRDL": gfbr_dl=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="MFBRUL": mfbr_ul=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="MFBRDL": mfbr_dl=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="AggregateBitRates": 
-                                                                            AggregateBitRates=elemento_ref_7
-                                                                            
-                                                                            qos_parameters=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
-                                                                                                        elemento_ref_6.id_short,elemento_ref_6.value, elemento_ref_6.category, elemento_ref_6.description,
-                                                                                                        elemento_ref_6.parent, elemento_ref_6.semantic_id, elemento_ref_6.qualifier, elemento_ref_6.kind)
-
-                                                                    if elemento_ref_6.id_short=="QosCharacteristics": qosCharacteristics=elemento_ref_6
-                                                                    for elemento_ref_7 in elemento_ref_6.value:
-                                                                        if elemento_ref_7.id_short=="ResourceType": ResourceType=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="PriorityLevel": PriorityLevel=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="PacketDelayBudget": PacketDelayBudget=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="PacketErrorRate": PacketErrorRate=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="AveragingWindow": AveragingWindow=elemento_ref_7
-                                                                        if elemento_ref_7.id_short=="MaximumDataBurstVolume": 
-                                                                            MaximumDataBurstVolume=elemento_ref_7
-                                                                            
-                                                                            qos_characteristics=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
-                                                                                                        elemento_ref_6.id_short,elemento_ref_6.value, elemento_ref_6.category, elemento_ref_6.description,
-                                                                                                        elemento_ref_6.parent, elemento_ref_6.semantic_id, elemento_ref_6.qualifier, elemento_ref_6.kind)
-                                                                            
-                                                                            alternativeQosProfile=AlternativeQosProfile(qos_parameters,qos_characteristics,elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
-                                                                                                        elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
-                                                                           
-                                                                            alternativeQosProfileList=AlternativeQosProfiles(elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
-                                                                                                        elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
-                                                                            alternativeQosProfileList.add_alternative_qos_profile(alternativeQosProfile)                                    
-                                            
-                                            qos_flow=QosFlowStatus(qfi, qos_profile,alternativeQosProfileList, rrm_parameters,elemento_ref_3.id_short,elemento_ref_3.value, elemento_ref_3.category, 
+                                            qos_flow=QosFlowStatus(qfi, qos_profile_requested,qos_profile_guaranteed, rrm_parameters,elemento_ref_3.id_short,elemento_ref_3.value, elemento_ref_3.category, 
                                                                                         elemento_ref_3.description, elemento_ref_3.parent, elemento_ref_3.semantic_id, elemento_ref_3.qualifier, elemento_ref_3.kind)
                                         
                                         qos_flow_list=QosFlowStatusList(elemento_ref_2.id_short,elemento_ref_2.value, elemento_ref_2.category, 
@@ -368,7 +459,10 @@ for obj in new_object_store:
                         pdu_session_list=PDUSessionStatusList(elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
                                                                                         elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
                         pdu_session_list.add_pdu_session(pdu_session)
-            ueAttachAndConnectionStatus=UeAttachAndConnectionStatus(ue_attached,rrc_state, pdu_session_list, technology, cellID,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
+                if elemento_contenido.id_short=="NewConnectionRequest": newConnectionRequest=elemento_contenido
+                if elemento_contenido.id_short=="ConnectionModificationRequest": connectionModificationRequest=elemento_contenido
+                if elemento_contenido.id_short=="QoSRequest": qoSRequest=elemento_contenido
+            ueAttachAndConnectionStatus=UeAttachAndConnectionStatus(ue_attached,rrc_state, pdu_session_list, newConnectionRequest, connectionModificationRequest, qoSRequest, obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
 
         elif(obj.identification.id==ue1_IRIS[9]):  #QosMonitoring
             for elemento_contenido in obj:
@@ -427,12 +521,12 @@ for obj in new_object_store:
                     parameters_pertaining_connections=ParametersPertainingConnections(pdu_session_list,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, elemento_contenido.description,
                                                                                                 elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)                                    
                 if elemento_contenido.id_short=="QosQuery": qosQuery=elemento_contenido
-                if elemento_contenido.id_short=="ConnectivityQosMonitoringSubscription": connectivityQosMonitoringSubscription=elemento_contenido
-                if elemento_contenido.id_short=="ConnectivityQosMonitoringResultsAndEvents": connectivityQosMonitoringResultsAndEvents=elemento_contenido
+                if elemento_contenido.id_short=="SubscriptionRequest": subscriptionRequest=elemento_contenido
+                if elemento_contenido.id_short=="EventNotificationAction": eventNotificationAction=elemento_contenido
                 if elemento_contenido.id_short=="ListOfSubscriptions": listOfMonitoringSubscriptions=ListOfMonitoringSubscriptions(elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, elemento_contenido.description,
                                                                                                 elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
                 if elemento_contenido.id_short=="UpdateTime":updateTime=elemento_contenido
-            qos_monitoring=QosMonitoring(general_key_performance_indicators,signal_level,parameters_pertaining_connections,qosQuery,connectivityQosMonitoringSubscription,connectivityQosMonitoringResultsAndEvents,listOfMonitoringSubscriptions,updateTime,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
+            qos_monitoring=QosMonitoring(general_key_performance_indicators,signal_level,parameters_pertaining_connections,qosQuery,subscriptionRequest,eventNotificationAction,listOfMonitoringSubscriptions,updateTime,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
 
         elif(obj.identification.id==ue1_IRIS[10]):  #Location
             for elemento_contenido in obj:
@@ -440,62 +534,21 @@ for obj in new_object_store:
                 if elemento_contenido.id_short=="YPosition":yPosition=elemento_contenido
                 if elemento_contenido.id_short=="ZPosition":zPosition=elemento_contenido 
                 if elemento_contenido.id_short=="Speed":speed=elemento_contenido
-                if elemento_contenido.id_short=="Aceleration":aceleration=elemento_contenido
+                if elemento_contenido.id_short=="Acceleration":acceleration=elemento_contenido
                 if elemento_contenido.id_short=="LCSQosClass": lcsQosClass=elemento_contenido
                 if elemento_contenido.id_short=="Accuracy": accuracy=elemento_contenido
                 if elemento_contenido.id_short=="ResponseTime": responseTime=elemento_contenido
-                if elemento_contenido.id_short=="LocationEventSubscription": locationEventSubscription=elemento_contenido
-                if elemento_contenido.id_short=="LocationResultsAndEvents": locationResultsAndEvents=elemento_contenido
+                if elemento_contenido.id_short=="SubscriptionRequest": subscriptionRequest=elemento_contenido
+                if elemento_contenido.id_short=="EventNotificationAction": eventNotificationAction=elemento_contenido
                 if elemento_contenido.id_short=="ListOfSubscriptions": listOfLocalizationSubscriptions=ListOfLocalizationSubscriptions(elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, elemento_contenido.description,
                                                                                                 elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
-            locationUE=LocationUE(xPosition, yPosition, zPosition,speed, aceleration, lcsQosClass, accuracy, responseTime,listOfLocalizationSubscriptions,locationEventSubscription,locationResultsAndEvents,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)    
-
-        elif(obj.identification.id==ue1_IRIS[11]):   #UE5GDatasheet
-            for elemento_contenido in obj:            
-                if elemento_contenido.id_short=="OperatingBands": operatingBands=elemento_contenido
-                if elemento_contenido.id_short=="UEChannelBandwidth":
-                    for elemento_ref in elemento_contenido.value:
-                        if elemento_ref.id_short=="MaximumTransmissionBandwidth": maxtxbw=elemento_ref
-                        if elemento_ref.id_short=="MinimumGuardbandAndTransmissionBandwidthConfiguration": 
-                            mingbandtxbwconfig=elemento_ref
-                            ueChannelBandwidth=UEChannelBandwidth(maxtxbw, mingbandtxbwconfig,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
-                                                                        elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
-                if elemento_contenido.id_short=="DuplexMode": duplexMode=elemento_contenido
-                if elemento_contenido.id_short=="TransmitterCharacteristics": 
-                    for elemento_ref in elemento_contenido.value:                                
-                        if elemento_ref.id_short=="UeMaximumOutputPower": ueMaxOutPower=elemento_ref
-                        if elemento_ref.id_short=="OutputPowerDynamics":
-                            for elemento_ref_2 in elemento_ref.value:
-                                if elemento_ref_2.id_short=="MinimumOutputPower": minOutPower=elemento_ref_2
-                                if elemento_ref_2.id_short=="TransmitOFFPower": 
-                                    transmitOFFPower=elemento_ref_2
-                                    output_power_dynamics=OutputPowerDynamics(minOutPower,transmitOFFPower,elemento_ref.id_short,elemento_ref.value, elemento_ref.category, 
-                                                                        elemento_ref.description, elemento_ref.parent, elemento_ref.semantic_id, elemento_ref.qualifier, elemento_ref.kind)
-                        if elemento_ref.id_short=="TransmitSignalQuality": transmitSignalQuality=elemento_ref
-                        if elemento_ref.id_short=="OutputRFSpectrumEmissions": outputRFSprectrumEmissions=elemento_ref
-                        if elemento_ref.id_short=="NumberOfAntennas": numberOfAntennas=elemento_ref
-                        if elemento_ref.id_short=="NumberOfLayers": numberOfLayers=elemento_ref 
-                        if elemento_ref.id_short=="MaximumDataUplink": maximumDataUplink=elemento_ref 
-                    transmitterCharacteristics=TransmitterCharacteristics(ueMaxOutPower,output_power_dynamics,transmitSignalQuality,outputRFSprectrumEmissions,numberOfAntennas,numberOfLayers,maximumDataUplink,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
-                                                                        elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
-                if elemento_contenido.id_short=="ReceiverCharacteristics": 
-                    for elemento_ref in elemento_contenido.value:                                
-                        if elemento_ref.id_short=="ReferenceSensitivityPowerLevel": refsenspowerlvl=elemento_ref
-                        if elemento_ref.id_short=="MaximumInputLevel": maxInputLevel=elemento_ref
-                        if elemento_ref.id_short=="AdjacentChannelSelectivity": adjacentChannelSelectivity=elemento_ref
-                        if elemento_ref.id_short=="NumberOfAntennas": numberOfAntennas=elemento_ref
-                        if elemento_ref.id_short=="NumberOfLayers": numberOfLayers=elemento_ref
-                        if elemento_ref.id_short=="MaximumDataDownlink": maximumDataDownlink=elemento_ref  
-                    receiverCharacteristics=ReceiverCharacteristics(refsenspowerlvl,maxInputLevel,adjacentChannelSelectivity,numberOfAntennas,numberOfLayers, maximumDataDownlink,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
-                                                                        elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
-            ue5GDatasheet=UE5GDataSheet(operatingBands,ueChannelBandwidth,duplexMode,transmitterCharacteristics,receiverCharacteristics,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
-
+            locationUE=LocationUE(xPosition, yPosition, zPosition,speed, acceleration, lcsQosClass, accuracy, responseTime,listOfLocalizationSubscriptions,subscriptionRequest,eventNotificationAction,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)    
 
 for obj in new_object_store:
     #Finally the AAS
     if isinstance(obj,AssetAdministrationShell):
-        if obj.id_short==ue1_IRIS[13]:
-            aasue5G=AASUE5G(ue5G,nameplate,identification,documentation,service,technicalData,simCard,ue5GIdentification,networkAccessRestrictions,ueAttachAndConnectionStatus,qos_monitoring,None,locationUE, ue5GDatasheet, obj.asset, obj.identification, obj.id_short, obj.category, obj.description, obj.parent, obj.administration, obj.security, obj.submodel, obj.concept_dictionary, obj.view, obj.derived_from)
+        if obj.id_short==ue1_IRIS[12]:
+            aasue5G=AASUE5G(ue5G,nameplate,identification,documentation,service,technicalData,ue5GIdentification,networkAccessRestrictions,ueAttachAndConnectionStatus,qos_monitoring, locationUE, ue5GDatasheet, obj.asset, obj.identification, obj.id_short, obj.category, obj.description, obj.parent, obj.administration, obj.security, obj.submodel, obj.concept_dictionary, obj.view, obj.derived_from)
 
 
 
@@ -513,7 +566,6 @@ identification_IRI= "https://example.com/ids/sm/8580_0160_4032_4523"
 documentation_IRI= "https://example.com/ids/sm/4590_0160_4032_7169"
 service_IRI= "https://example.com/ids/sm/0464_0160_4032_2624"
 technicalData_IRI= "https://example.com/ids/sm/0201_0160_4032_9321"
-simCard_IRI= "https://example.com/ids/sm/8472_3111_1042_7903"
 ue5GIdentification_IRI= "https://example.com/ids/sm/1451_2120_5032_6719"
 networkAccessRestrictions_IRI= "https://example.com/ids/sm/9374_0160_4032_3879"
 ueAttachAndConnectionStatus_IRI= "https://example.com/ids/sm/3513_1160_4032_9468"
@@ -522,7 +574,7 @@ location_IRI= "https://example.com/ids/sm/2161_6162_4032_6231"
 ue5GDataSheet_IRI= "https://example.com/ids/sm/6553_4122_4042_8971"
 asset_idShort= "UE_5G_2"
 AAS_idShort= "AAS_UE_5G_2"
-ue2_IRIS=[nameplate_IRI, identification_IRI, documentation_IRI, service_IRI, technicalData_IRI, simCard_IRI, ue5GIdentification_IRI, networkAccessRestrictions_IRI,ueAttachAndConnectionStatus_IRI,qosMonitoring_IRI, location_IRI,ue5GDataSheet_IRI, asset_idShort,AAS_idShort]
+ue2_IRIS=[nameplate_IRI, identification_IRI, documentation_IRI, service_IRI, technicalData_IRI, ue5GDataSheet_IRI, ue5GIdentification_IRI, networkAccessRestrictions_IRI,ueAttachAndConnectionStatus_IRI,qosMonitoring_IRI, location_IRI, asset_idShort,AAS_idShort]
 
 
 Ues = [ue1_IRIS, ue2_IRIS]
@@ -534,7 +586,7 @@ for ue in Ues:
     for obj in new_object_store:
         #First the asset
         if isinstance(obj, Asset):
-            if obj.id_short==ue[12]: 
+            if obj.id_short==ue[11]: 
                 ue5G=UE5G(obj.kind, obj.identification, obj.id_short, obj.category, obj.description)
 
     for obj in new_object_store:
@@ -672,14 +724,44 @@ for ue in Ues:
                                                                                                     elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
                 technicalData=TechnicalData(general_info,prod_class_system,technicalProperties,further_info,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)       
     
-            elif(obj.identification.id==ue[5]):  #SimCard
-                for elemento_contenido in obj:
-                    if elemento_contenido.id_short=="IMSI": imsi=elemento_contenido
-                    if elemento_contenido.id_short=="ICCID": iccid=elemento_contenido
-                    if elemento_contenido.id_short=="PIN": pin=elemento_contenido
-                    if elemento_contenido.id_short=="SPN": spn=elemento_contenido
-                    if elemento_contenido.id_short=="AuthenticationKey": authenticationkey=elemento_contenido
-                simCard=SIMCard(imsi,iccid,pin,spn,authenticationkey,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)              
+            elif(obj.identification.id==ue[5]):  #UE5GDataSheet
+                for elemento_contenido in obj:            
+                    if elemento_contenido.id_short=="OperatingBands": operatingBands=elemento_contenido
+                    if elemento_contenido.id_short=="UEChannelBandwidth":
+                        for elemento_ref in elemento_contenido.value:
+                            if elemento_ref.id_short=="MaximumTransmissionBandwidth": 
+                                maxtxbw=elemento_ref
+                                ueChannelBandwidth=UEChannelBandwidth(maxtxbw, elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
+                                                                            elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
+                    if elemento_contenido.id_short=="DuplexMode": duplexMode=elemento_contenido
+                    if elemento_contenido.id_short=="TransmitterCharacteristics": 
+                        for elemento_ref in elemento_contenido.value:                                
+                            if elemento_ref.id_short=="UeMaximumOutputPower": ueMaxOutPower=elemento_ref
+                            if elemento_ref.id_short=="OutputPowerDynamics":
+                                for elemento_ref_2 in elemento_ref.value:
+                                    if elemento_ref_2.id_short=="MinimumOutputPower": minOutPower=elemento_ref_2
+                                    if elemento_ref_2.id_short=="TransmitOFFPower": 
+                                        transmitOFFPower=elemento_ref_2
+                                        output_power_dynamics=OutputPowerDynamics(minOutPower,transmitOFFPower,elemento_ref.id_short,elemento_ref.value, elemento_ref.category, 
+                                                                            elemento_ref.description, elemento_ref.parent, elemento_ref.semantic_id, elemento_ref.qualifier, elemento_ref.kind)
+                            if elemento_ref.id_short=="TransmitSignalQuality": transmitSignalQuality=elemento_ref
+                            if elemento_ref.id_short=="OutputRFSpectrumEmissions": outputRFSprectrumEmissions=elemento_ref
+                            if elemento_ref.id_short=="NumberOfAntennas": numberOfAntennas=elemento_ref
+                            if elemento_ref.id_short=="NumberOfLayers": numberOfLayers=elemento_ref 
+                            if elemento_ref.id_short=="MaximumDataUplink": maximumDataUplink=elemento_ref 
+                        transmitterCharacteristics=TransmitterCharacteristics(ueMaxOutPower,output_power_dynamics,transmitSignalQuality,outputRFSprectrumEmissions,numberOfAntennas,numberOfLayers,maximumDataUplink,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
+                                                                            elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
+                    if elemento_contenido.id_short=="ReceiverCharacteristics": 
+                        for elemento_ref in elemento_contenido.value:                                
+                            if elemento_ref.id_short=="ReferenceSensitivityPowerLevel": refsenspowerlvl=elemento_ref
+                            if elemento_ref.id_short=="MaximumInputLevel": maxInputLevel=elemento_ref
+                            if elemento_ref.id_short=="AdjacentChannelSelectivity": adjacentChannelSelectivity=elemento_ref
+                            if elemento_ref.id_short=="NumberOfAntennas": numberOfAntennas=elemento_ref
+                            if elemento_ref.id_short=="NumberOfLayers": numberOfLayers=elemento_ref
+                            if elemento_ref.id_short=="MaximumDataDownlink": maximumDataDownlink=elemento_ref  
+                        receiverCharacteristics=ReceiverCharacteristics(refsenspowerlvl,maxInputLevel,adjacentChannelSelectivity,numberOfAntennas,numberOfLayers, maximumDataDownlink,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
+                                                                            elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
+                ue5GDatasheet=UE5GDataSheet(operatingBands,ueChannelBandwidth,duplexMode,transmitterCharacteristics,receiverCharacteristics,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)              
 
             elif(obj.identification.id==ue[6]):  #Ue5GIdentification
                 for elemento_contenido in obj:
@@ -689,9 +771,12 @@ for ue in Ues:
                     if elemento_contenido.id_short=="CertificateStatus": certificateStatus=elemento_contenido
                     if elemento_contenido.id_short=="IPAddress": ipAddress=elemento_contenido
                     if elemento_contenido.id_short=="MacAddress": macAddress=elemento_contenido
-                    if elemento_contenido.id_short=="IMEI": imei=elemento_contenido
-                ue5GIdentification=Ue5GIdentification(pei, gpsi, authenticationCertificate,certificateStatus,ipAddress, macAddress, imei,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
-
+                    if elemento_contenido.id_short=="IMSI": imsi=elemento_contenido
+                    if elemento_contenido.id_short=="ICCID": iccid=elemento_contenido
+                    if elemento_contenido.id_short=="PIN": pin=elemento_contenido
+                    if elemento_contenido.id_short=="SPN": spn=elemento_contenido
+                ue5GIdentification=Ue5GIdentification(pei, gpsi, authenticationCertificate,certificateStatus,ipAddress, macAddress, imsi, spn, pin, iccid obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
+                
             elif(obj.identification.id==ue[7]):  #NetworkAccessRestrictions
                 for elemento_contenido in obj:
                     if elemento_contenido.id_short=="ListOfCellGlobalIdentifier": 
@@ -712,10 +797,8 @@ for ue in Ues:
                 for elemento_contenido in obj:  
                     if elemento_contenido.id_short=="UeAttached": ue_attached=elemento_contenido
                     if elemento_contenido.id_short=="RRCState": rrc_state=elemento_contenido
-                    if elemento_contenido.id_short=="Technology": technology=elemento_contenido
-                    if elemento_contenido.id_short=="CellID": cellID=elemento_contenido
                     if isinstance(elemento_contenido, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):       
-                        for elemento_ref in elemento_contenido.value:                                                                                                         
+                        for elemento_ref in elemento_contenido.value:                                                                                                        
                             if isinstance(elemento_ref, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):
                                 for elemento_ref_2 in elemento_ref.value:   
                                     if elemento_ref_2.id_short=="IPAddress": ip_address=elemento_ref_2
@@ -725,11 +808,24 @@ for ue in Ues:
                                     if isinstance(elemento_ref_2, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):                                        
                                         for elemento_ref_3 in elemento_ref_2.value: 
                                             if isinstance(elemento_ref_3, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):    
-                                                for elemento_ref_4 in elemento_ref_3.value:   
+                                                for elemento_ref_4 in elemento_ref_3.value:  
                                                     if elemento_ref_4.id_short=="QFI": qfi= elemento_ref_4
                                                     if isinstance(elemento_ref_4, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):
                                                         for elemento_ref_5 in elemento_ref_4.value: 
-                                                            if isinstance(elemento_ref_5, (SubmodelElementCollectionOrdered, SubmodelElementCollectionUnordered)):
+                                                            if elemento_ref_4.id_short=="RRMParameters":
+                                                                        if elemento_ref_5.id_short=="MCSTable": mcstable=elemento_ref_5
+                                                                        if elemento_ref_5.id_short=="CQITable": cqitable=elemento_ref_5
+                                                                        if elemento_ref_5.id_short=="TargetBLER": target_bler=elemento_ref_5
+                                                                        if elemento_ref_5.id_short=="SchedulingType": scheduling_type=elemento_ref_5
+                                                                        if elemento_ref_5.id_short=="SchedulingPolicy": scheduling_policy=elemento_ref_5
+                                                                        if elemento_ref_5.id_short=="HARQMaximumNumberOfRetransmissions": harq_max_num_retransmissions=elemento_ref_5
+                                                                        if elemento_ref_5.id_short=="KNumber": k_number=elemento_ref_5
+                                                                        if elemento_ref_5.id_short=="PowerControlPmax": 
+                                                                            power_control_pmax=elemento_ref_5
+                                                                            rrm_parameters=RRMParameters(mcstable,cqitable,target_bler, scheduling_type,scheduling_policy, harq_max_num_retransmissions,k_number, power_control_pmax, elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
+                                                                                            elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
+
+                                                            if elemento_ref_4.id_short=="QosProfileRequested":                                                            
                                                                 for elemento_ref_6 in elemento_ref_5.value: 
                                                                     if elemento_ref_6.id_short=="QosIdentifier": QosIdentifier=elemento_ref_6
                                                                     if elemento_ref_6.id_short=="ARP": arp=elemento_ref_6
@@ -742,9 +838,8 @@ for ue in Ues:
                                                                     if elemento_ref_6.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_6
                                                                     if elemento_ref_6.id_short=="AggregateBitRates": 
                                                                         AggregateBitRates=elemento_ref_6
-                                                                        #Tenemos que ver si le queremos añadirle todo, es cargar su .value y demás ya que realmente los valores de una colección
-                                                                        #son los elementos que contiene y eso lo estamos añadiendo ya
-                                                                        qos_parameters=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
+                                                                        
+                                                                        qos_parameters_r=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
                                                                                                     elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
                                                                                                     elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
                                                                         
@@ -756,85 +851,132 @@ for ue in Ues:
                                                                     if elemento_ref_6.id_short=="MaximumDataBurstVolume": 
                                                                         MaximumDataBurstVolume=elemento_ref_6
                                                                         
-                                                                        qos_characteristics=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
+                                                                        qos_characteristics_r=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
                                                                                                     elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
                                                                                                     elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
-                                                                       
-                                                                        qos_profile=QosProfile(qos_parameters,qos_characteristics,elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
-                                                                                            elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
 
-                                                                    if elemento_ref_5.id_short=="Uplink":
-                                                                        if elemento_ref_6.id_short=="MCSTable": mcstable_ul=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="CQITable": cqitable_ul=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="TargetBLER": target_bler_ul=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="SchedulingType": scheduling_type_ul=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="SchedulingPolicy": scheduling_policy_ul=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="HARQMaximumNumberOfRetransmissions": harq_max_num_retransmissions_ul=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="KNumber": k_number_ul=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="PowerControlPmax": 
-                                                                            power_control_pmax_ul=elemento_ref_6
-                                                                            uplink=Uplink(mcstable_ul,cqitable_ul,target_bler_ul, scheduling_type_ul,scheduling_policy_ul, harq_max_num_retransmissions_ul,k_number_ul, power_control_pmax_ul,
-                                                                                        elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
-                                                                                        elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
 
-                                                                    if elemento_ref_5.id_short=="Downlink":
-                                                                        if elemento_ref_6.id_short=="MCSTable": mcstable_dl=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="CQITable": cqitable_dl=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="TargetBLER": target_bler_dl=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="SchedulingType": scheduling_type_dl=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="SchedulingPolicy": scheduling_policy_dl=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="HARQMaximumNumberOfRetransmissions": harq_max_num_retransmissions_dl=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="KNumber": k_number_dl=elemento_ref_6
-                                                                        if elemento_ref_6.id_short=="PowerControlPmax": 
-                                                                            power_control_pmax_dl=elemento_ref_6
-                                                                            downlink=Downlink(mcstable_ul,cqitable_ul,target_bler_ul, scheduling_type_ul,scheduling_policy_ul, harq_max_num_retransmissions_ul,k_number_ul, power_control_pmax_ul,
-                                                                                        elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
-                                                                                        elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
-                                                                   
-                                                                            rrm_parameters=RRMParameters(uplink,downlink, elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
-                                                                                            elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
-                                                                
-                                                                    if elemento_ref_5.id_short=="AlternativeQosProfile01":
-                                                                        if elemento_ref_6.id_short=="QosParameters": qosParameters=elemento_ref_6
-                                                                        for elemento_ref_7 in elemento_ref_6.value: 
-                                                                            if elemento_ref_7.id_short=="QosIdentifier": QosIdentifier=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="ARP": arp=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="RQA": rqa=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="NotificationControl": notificationControl=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="GFBRUL": gfbr_ul=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="GFBRDL": gfbr_dl=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="MFBRUL": mfbr_ul=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="MFBRDL": mfbr_dl=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="AggregateBitRates": 
-                                                                                AggregateBitRates=elemento_ref_7
-                                                                               
+                                                                if elemento_ref_5.id_short=="AlternativeQosProfiles":
+                                                                    if elemento_ref_6.id_short=="AlternativeQosProfile01":
+            
+                                                                        if elemento_ref_7.id_short=="QosParameters": qosParameters=elemento_ref_7
+                                                                        for elemento_ref_8 in elemento_ref_7.value: 
+                                                                            if elemento_ref_8.id_short=="QosIdentifier": QosIdentifier=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="ARP": arp=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="RQA": rqa=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="NotificationControl": notificationControl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="GFBRUL": gfbr_ul=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="GFBRDL": gfbr_dl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MFBRUL": mfbr_ul=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MFBRDL": mfbr_dl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="AggregateBitRates": 
+                                                                                AggregateBitRates=elemento_ref_8
+                                                                                
                                                                                 qos_parameters=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
-                                                                                                            elemento_ref_6.id_short,elemento_ref_6.value, elemento_ref_6.category, elemento_ref_6.description,
-                                                                                                            elemento_ref_6.parent, elemento_ref_6.semantic_id, elemento_ref_6.qualifier, elemento_ref_6.kind)
+                                                                                                            elemento_ref_7.id_short,elemento_ref_7.value, elemento_ref_7.category, elemento_ref_7.description,
+                                                                                                            elemento_ref_7.parent, elemento_ref_7.semantic_id, elemento_ref_7.qualifier, elemento_ref_7.kind)
 
-                                                                        if elemento_ref_6.id_short=="QosCharacteristics": qosCharacteristics=elemento_ref_6
-                                                                        for elemento_ref_7 in elemento_ref_6.value:
-                                                                            if elemento_ref_7.id_short=="ResourceType": ResourceType=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="PriorityLevel": PriorityLevel=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="PacketDelayBudget": PacketDelayBudget=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="PacketErrorRate": PacketErrorRate=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="AveragingWindow": AveragingWindow=elemento_ref_7
-                                                                            if elemento_ref_7.id_short=="MaximumDataBurstVolume": 
-                                                                                MaximumDataBurstVolume=elemento_ref_7
+                                                                        if elemento_ref_7.id_short=="QosCharacteristics": qosCharacteristics=elemento_ref_7
+                                                                        for elemento_ref_8 in elemento_ref_7.value:
+                                                                            if elemento_ref_8.id_short=="ResourceType": ResourceType=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PriorityLevel": PriorityLevel=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PacketDelayBudget": PacketDelayBudget=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PacketErrorRate": PacketErrorRate=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="AveragingWindow": AveragingWindow=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MaximumDataBurstVolume": 
+                                                                                MaximumDataBurstVolume=elemento_ref_8
                                                                                 
                                                                                 qos_characteristics=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
-                                                                                                            elemento_ref_6.id_short,elemento_ref_6.value, elemento_ref_6.category, elemento_ref_6.description,
-                                                                                                            elemento_ref_6.parent, elemento_ref_6.semantic_id, elemento_ref_6.qualifier, elemento_ref_6.kind)
-                                                                               
-                                                                                alternativeQosProfile=AlternativeQosProfile(qos_parameters,qos_characteristics,elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
-                                                                                                            elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
+                                                                                                            elemento_ref_7.id_short,elemento_ref_7.value, elemento_ref_7.category, elemento_ref_7.description,
+                                                                                                            elemento_ref_7.parent, elemento_ref_7.semantic_id, elemento_ref_7.qualifier, elemento_ref_7.kind)
                                                                                 
+                                                                                alternativeQosProfile=AlternativeQosProfile(qos_parameters,qos_characteristics,elemento_ref_6.id_short,elemento_ref_6.value, elemento_ref_6.category, elemento_ref_6.description,
+                                                                                                            elemento_ref_6.parent, elemento_ref_6.semantic_id, elemento_ref_6.qualifier, elemento_ref_6.kind)
+                                                                            
                                                                                 alternativeQosProfileList=AlternativeQosProfiles(elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
                                                                                                             elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
-                                                                                alternativeQosProfileList.add_alternative_qos_profile(alternativeQosProfile)                                    
-                                                
-                                                qos_flow=QosFlowStatus(qfi, qos_profile,alternativeQosProfileList, rrm_parameters,elemento_ref_3.id_short,elemento_ref_3.value, elemento_ref_3.category, 
+                                                                                alternativeQosProfileList.add_alternative_qos_profile(alternativeQosProfile)   
+
+                                                                        qos_profile_requested=QosProfile(qos_parameters_r,qos_characteristics_r, alternativeQosProfileList, elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
+                                                                                            elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
+
+                                                            if elemento_ref_4.id_short=="QosProfileGuaranteed":                                                            
+                                                                for elemento_ref_6 in elemento_ref_5.value: 
+                                                                    if elemento_ref_6.id_short=="QosIdentifier": QosIdentifier=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="ARP": arp=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="RQA": rqa=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="NotificationControl": notificationControl=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="GFBRUL": gfbr_ul=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="GFBRDL": gfbr_dl=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="MFBRUL": mfbr_ul=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="MFBRDL": mfbr_dl=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="AggregateBitRates": 
+                                                                        AggregateBitRates=elemento_ref_6
+                                                                        
+                                                                        qos_parameters_g=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
+                                                                                                    elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
+                                                                                                    elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
+                                                                        
+                                                                    if elemento_ref_6.id_short=="ResourceType": ResourceType=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="PriorityLevel": PriorityLevel=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="PacketDelayBudget": PacketDelayBudget=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="PacketErrorRate": PacketErrorRate=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="AveragingWindow": AveragingWindow=elemento_ref_6
+                                                                    if elemento_ref_6.id_short=="MaximumDataBurstVolume": 
+                                                                        MaximumDataBurstVolume=elemento_ref_6
+                                                                        
+                                                                        qos_characteristics_g=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
+                                                                                                    elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
+                                                                                                    elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
+                                                                if elemento_ref_5.id_short=="AlternativeQosProfiles":
+                                                                    if elemento_ref_6.id_short=="AlternativeQosProfile01":
+            
+                                                                        if elemento_ref_7.id_short=="QosParameters": qosParameters=elemento_ref_7
+                                                                        for elemento_ref_8 in elemento_ref_7.value: 
+                                                                            if elemento_ref_8.id_short=="QosIdentifier": QosIdentifier=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="ARP": arp=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="RQA": rqa=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="NotificationControl": notificationControl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="GFBRUL": gfbr_ul=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="GFBRDL": gfbr_dl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MFBRUL": mfbr_ul=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MFBRDL": mfbr_dl=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MaximumPacketLossRate": MaximumPacketLossRate=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="AggregateBitRates": 
+                                                                                AggregateBitRates=elemento_ref_8
+                                                                                
+                                                                                qos_parameters=QosParameters(QosIdentifier,arp, rqa,notificationControl,gfbr_ul,gfbr_dl,mfbr_ul, mfbr_dl,MaximumPacketLossRate,AggregateBitRates,
+                                                                                                            elemento_ref_7.id_short,elemento_ref_7.value, elemento_ref_7.category, elemento_ref_7.description,
+                                                                                                            elemento_ref_7.parent, elemento_ref_7.semantic_id, elemento_ref_7.qualifier, elemento_ref_7.kind)
+
+                                                                        if elemento_ref_7.id_short=="QosCharacteristics": qosCharacteristics=elemento_ref_7
+                                                                        for elemento_ref_8 in elemento_ref_7.value:
+                                                                            if elemento_ref_8.id_short=="ResourceType": ResourceType=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PriorityLevel": PriorityLevel=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PacketDelayBudget": PacketDelayBudget=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="PacketErrorRate": PacketErrorRate=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="AveragingWindow": AveragingWindow=elemento_ref_8
+                                                                            if elemento_ref_8.id_short=="MaximumDataBurstVolume": 
+                                                                                MaximumDataBurstVolume=elemento_ref_8
+                                                                                
+                                                                                qos_characteristics=QosCharacteristics(ResourceType, PriorityLevel, PacketDelayBudget, PacketErrorRate,AveragingWindow, MaximumDataBurstVolume,
+                                                                                                            elemento_ref_7.id_short,elemento_ref_7.value, elemento_ref_7.category, elemento_ref_7.description,
+                                                                                                            elemento_ref_7.parent, elemento_ref_7.semantic_id, elemento_ref_7.qualifier, elemento_ref_7.kind)
+                                                                                
+                                                                                alternativeQosProfile=AlternativeQosProfile(qos_parameters,qos_characteristics,elemento_ref_6.id_short,elemento_ref_6.value, elemento_ref_6.category, elemento_ref_6.description,
+                                                                                                            elemento_ref_6.parent, elemento_ref_6.semantic_id, elemento_ref_6.qualifier, elemento_ref_6.kind)
+                                                                            
+                                                                                alternativeQosProfileList=AlternativeQosProfiles(elemento_ref_5.id_short,elemento_ref_5.value, elemento_ref_5.category, elemento_ref_5.description,
+                                                                                                            elemento_ref_5.parent, elemento_ref_5.semantic_id, elemento_ref_5.qualifier, elemento_ref_5.kind)
+                                                                                alternativeQosProfileList.add_alternative_qos_profile(alternativeQosProfile)   
+
+                                                                        
+                                                                        qos_profile_guaranteed=QosProfile(qos_parameters_g,qos_characteristics_g, alternativeQosProfileList, elemento_ref_4.id_short,elemento_ref_4.value, elemento_ref_4.category, 
+                                                                                            elemento_ref_4.description, elemento_ref_4.parent, elemento_ref_4.semantic_id, elemento_ref_4.qualifier, elemento_ref_4.kind)
+
+                                                qos_flow=QosFlowStatus(qfi, qos_profile_requested,qos_profile_guaranteed, rrm_parameters,elemento_ref_3.id_short,elemento_ref_3.value, elemento_ref_3.category, 
                                                                                             elemento_ref_3.description, elemento_ref_3.parent, elemento_ref_3.semantic_id, elemento_ref_3.qualifier, elemento_ref_3.kind)
                                             
                                             qos_flow_list=QosFlowStatusList(elemento_ref_2.id_short,elemento_ref_2.value, elemento_ref_2.category, 
@@ -847,7 +989,10 @@ for ue in Ues:
                             pdu_session_list=PDUSessionStatusList(elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
                                                                                             elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
                             pdu_session_list.add_pdu_session(pdu_session)
-                ueAttachAndConnectionStatus=UeAttachAndConnectionStatus(ue_attached,rrc_state, pdu_session_list, technology, cellID,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
+                    if elemento_contenido.id_short=="NewConnectionRequest": newConnectionRequest=elemento_contenido
+                    if elemento_contenido.id_short=="ConnectionModificationRequest": connectionModificationRequest=elemento_contenido
+                    if elemento_contenido.id_short=="QoSRequest": qoSRequest=elemento_contenido
+                ueAttachAndConnectionStatus=UeAttachAndConnectionStatus(ue_attached,rrc_state, pdu_session_list, newConnectionRequest, connectionModificationRequest, qoSRequest, obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
 
             elif(obj.identification.id==ue[9]):  #QosMonitoring
                 for elemento_contenido in obj:
@@ -872,8 +1017,8 @@ for ue in Ues:
                                 signal_level=SignalLevel(rssi,rsrp,rsrq,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, elemento_contenido.description,
                                                                                                     elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
                     if elemento_contenido.id_short=="ParametersPertainingConnections":
-                        for elemento_ref in elemento_contenido.value:                                                                                             
-                            for elemento_ref_2 in elemento_ref.value:                                           
+                        for elemento_ref in elemento_contenido.value:                                                                                                 
+                            for elemento_ref_2 in elemento_ref.value:                                          
                                 for elemento_ref_3 in elemento_ref_2.value: 
                                     if elemento_ref_3.id_short=="IPAddress": ip_address=elemento_ref_3 
                                     if elemento_ref_3.id_short=="QosFlowList":
@@ -906,75 +1051,35 @@ for ue in Ues:
                         parameters_pertaining_connections=ParametersPertainingConnections(pdu_session_list,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, elemento_contenido.description,
                                                                                                     elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)                                    
                     if elemento_contenido.id_short=="QosQuery": qosQuery=elemento_contenido
-                    if elemento_contenido.id_short=="ConnectivityQosMonitoringSubscription": connectivityQosMonitoringSubscription=elemento_contenido
-                    if elemento_contenido.id_short=="ConnectivityQosMonitoringResultsAndEvents": connectivityQosMonitoringResultsAndEvents=elemento_contenido
+                    if elemento_contenido.id_short=="SubscriptionRequest": subscriptionRequest=elemento_contenido
+                    if elemento_contenido.id_short=="EventNotificationAction": eventNotificationAction=elemento_contenido
                     if elemento_contenido.id_short=="ListOfSubscriptions": listOfMonitoringSubscriptions=ListOfMonitoringSubscriptions(elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, elemento_contenido.description,
                                                                                                     elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
                     if elemento_contenido.id_short=="UpdateTime":updateTime=elemento_contenido
-                qos_monitoring=QosMonitoring(general_key_performance_indicators,signal_level,parameters_pertaining_connections,qosQuery,connectivityQosMonitoringSubscription,connectivityQosMonitoringResultsAndEvents,listOfMonitoringSubscriptions,updateTime,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
-
+                qos_monitoring=QosMonitoring(general_key_performance_indicators,signal_level,parameters_pertaining_connections,qosQuery,subscriptionRequest,eventNotificationAction,listOfMonitoringSubscriptions,updateTime,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
+        
+        
             elif(obj.identification.id==ue[10]):  #Location
                 for elemento_contenido in obj:
                     if elemento_contenido.id_short=="XPosition":xPosition=elemento_contenido
                     if elemento_contenido.id_short=="YPosition":yPosition=elemento_contenido
                     if elemento_contenido.id_short=="ZPosition":zPosition=elemento_contenido 
                     if elemento_contenido.id_short=="Speed":speed=elemento_contenido
-                    if elemento_contenido.id_short=="Aceleration":aceleration=elemento_contenido
+                    if elemento_contenido.id_short=="Acceleration":acceleration=elemento_contenido
                     if elemento_contenido.id_short=="LCSQosClass": lcsQosClass=elemento_contenido
                     if elemento_contenido.id_short=="Accuracy": accuracy=elemento_contenido
                     if elemento_contenido.id_short=="ResponseTime": responseTime=elemento_contenido
-                    if elemento_contenido.id_short=="LocationEventSubscription": locationEventSubscription=elemento_contenido
-                    if elemento_contenido.id_short=="LocationResultsAndEvents": locationResultsAndEvents=elemento_contenido
+                    if elemento_contenido.id_short=="SubscriptionRequest": subscriptionRequest=elemento_contenido
+                    if elemento_contenido.id_short=="EventNotificationAction": eventNotificationAction=elemento_contenido
                     if elemento_contenido.id_short=="ListOfSubscriptions": listOfLocalizationSubscriptions=ListOfLocalizationSubscriptions(elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, elemento_contenido.description,
                                                                                                     elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
-                locationUE=LocationUE(xPosition, yPosition, zPosition,speed, aceleration, lcsQosClass, accuracy, responseTime,listOfLocalizationSubscriptions,locationEventSubscription,locationResultsAndEvents,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
-
-            elif(obj.identification.id==ue[11]):   #UE5GDatasheet
-                for elemento_contenido in obj:         
-                    if elemento_contenido.id_short=="OperatingBands": operatingBands=elemento_contenido
-                    if elemento_contenido.id_short=="UEChannelBandwidth": 
-                        for elemento_ref in elemento_contenido:
-                            if elemento_ref.id_short=="MaximumTransmissionBandwidth": maxtxbw=elemento_ref
-                            if elemento_ref.id_short=="MinimumGuardbandAndTransmissionBandwidthConfiguration": mingbandtxbwconfig=elemento_ref
-                        ueChannelBandwidth=UEChannelBandwidth(maxtxbw, mingbandtxbwconfig,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
-                                                                            elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
-                    if elemento_contenido.id_short=="DuplexMode": duplexMode=elemento_contenido
-                    if elemento_contenido.id_short=="TransmitterCharacteristics": 
-                        for elemento_ref in elemento_contenido.value:                              
-                            if elemento_ref.id_short=="UeMaximumOutputPower": ueMaxOutPower=elemento_ref
-                            if elemento_ref.id_short=="OutputPowerDynamics":
-                                for elemento_ref_2 in elemento_ref.value:
-                                    if elemento_ref_2.id_short=="MinimumOutputPower": minOutPower=elemento_ref_2
-                                    if elemento_ref_2.id_short=="TransmitOFFPower": 
-                                        transmitOFFPower=elemento_ref_2
-                                        output_power_dynamics=OutputPowerDynamics(minOutPower,transmitOFFPower,elemento_ref.id_short,elemento_ref.value, elemento_ref.category, 
-                                                                            elemento_ref.description, elemento_ref.parent, elemento_ref.semantic_id, elemento_ref.qualifier, elemento_ref.kind)
-                            if elemento_ref.id_short=="TransmitSignalQuality": transmitSignalQuality=elemento_ref
-                            if elemento_ref.id_short=="OutputRFSpectrumEmissions": outputRFSprectrumEmissions=elemento_ref
-                            if elemento_ref.id_short=="NumberOfAntennas": numberOfAntennas=elemento_ref
-                            if elemento_ref.id_short=="NumberOfLayers": numberOfLayers=elemento_ref 
-                            if elemento_ref.id_short=="MaximumDataUplink": maximumDataUplink=elemento_ref 
-                        transmitterCharacteristics=TransmitterCharacteristics(ueMaxOutPower,output_power_dynamics,transmitSignalQuality,outputRFSprectrumEmissions,numberOfAntennas,numberOfLayers,maximumDataUplink,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
-                                                                            elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
-                    if elemento_contenido.id_short=="ReceiverCharacteristics": 
-                        for elemento_ref in elemento_contenido.value:                              
-                            if elemento_ref.id_short=="ReferenceSensitivityPowerLevel": refsenspowerlvl=elemento_ref
-                            if elemento_ref.id_short=="MaximumInputLevel": maxInputLevel=elemento_ref
-                            if elemento_ref.id_short=="AdjacentChannelSelectivity": adjacentChannelSelectivity=elemento_ref
-                            if elemento_ref.id_short=="NumberOfAntennas": numberOfAntennas=elemento_ref
-                            if elemento_ref.id_short=="NumberOfLayers": numberOfLayers=elemento_ref
-                            if elemento_ref.id_short=="MaximumDataDownlink": maximumDataDownlink=elemento_ref  
-                        receiverCharacteristics=ReceiverCharacteristics(refsenspowerlvl,maxInputLevel,adjacentChannelSelectivity,numberOfAntennas,numberOfLayers, maximumDataDownlink,elemento_contenido.id_short,elemento_contenido.value, elemento_contenido.category, 
-                                                                            elemento_contenido.description, elemento_contenido.parent, elemento_contenido.semantic_id, elemento_contenido.qualifier, elemento_contenido.kind)
-                ue5GDatasheet=UE5GDataSheet(operatingBands,ueChannelBandwidth,duplexMode,transmitterCharacteristics,receiverCharacteristics,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)    
-
-
+                locationUE=LocationUE(xPosition, yPosition, zPosition,speed, acceleration, lcsQosClass, accuracy, responseTime,listOfLocalizationSubscriptions,subscriptionRequest,eventNotificationAction,obj.identification,obj.submodel_element,obj.id_short,obj.category,obj.description,obj.parent,obj.administration,obj.semantic_id,obj.qualifier,obj.kind)
 
     for obj in new_object_store:
         #Finally the AAS
         if isinstance(obj,AssetAdministrationShell):
-            if obj.id_short==ue[13]:
-                aasue5G=AASUE5G(ue5G,nameplate,identification,documentation,service,technicalData,simCard,ue5GIdentification,networkAccessRestrictions,ueAttachAndConnectionStatus,qos_monitoring,None,locationUE, ue5GDatasheet, obj.asset, obj.identification, obj.id_short, obj.category, obj.description, obj.parent, obj.administration, obj.security, obj.submodel, obj.concept_dictionary, obj.view, obj.derived_from)
+            if obj.id_short==ue[12]:
+                aasue5G=AASUE5G(ue5G,nameplate,identification,documentation,service,technicalData,simCard,ue5GIdentification,networkAccessRestrictions,ueAttachAndConnectionStatus,qos_monitoring, locationUE, ue5GDatasheet, obj.asset, obj.identification, obj.id_short, obj.category, obj.description, obj.parent, obj.administration, obj.security, obj.submodel, obj.concept_dictionary, obj.view, obj.derived_from)
                 listOfUeAASs.append(aasue5G)
         
 
