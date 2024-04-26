@@ -20,9 +20,9 @@ aasue5G.ue5GIdentification.permanentEquipmentIdentifier.value=2976
 aasue5G.ueAttachAndConnectionStatus.pduSessionList.pduSessions[0].linkDirection.value="Uplink"
 
 #Same with network
-aasnw5G.connectivity.uesAttachedList.uesAttached[0].ueID.gpsi.value=8427
+aasnw5G.connectivity.uesAttachedList.uesAttached[0].gpsi.value=8427
 aasnw5G.location.listOfConnectedUes.connectedUes[1].lcsQosClass="Best Effort"
-aasnw5G.tsnCapabilities.bridge5GS.parameters5GS.propagationDelayPerPort=8
+aasnw5G.tsnCapabilities.bridge5GS.bridge5GSConfiguration.propagationDelayPerPort=8
 
 
 '''
@@ -38,7 +38,5 @@ Example of use of this list could be these:
 print(listOfUeAASs[0].location.accuracy.id_short)
 listOfUeAASs[1].qosMonitoring.updateTime.value=18
 
-Another example is to use the functions with the list:
-asign_qos_characteristics(listOfUeAASs[0],1,1)
 
 '''
