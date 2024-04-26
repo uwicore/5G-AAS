@@ -19,24 +19,70 @@ class UE5G(Asset):
 
 
 class AASUE5G(AssetAdministrationShell):
-    def __init__(self, asset_real,nameplate,identification_submodel,documentation,service,technicalData,simCard,ue5GIdentification,networkAccessRestrictions,ueAttachAndConnectionStatus,qos_monitoring, qosRequired, location, ue5GDatasheet, asset: AASReference[Asset], identification: Identifier, id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, security: Security | None = None, submodel: Set[AASReference[Submodel]] | None = None, concept_dictionary: Iterable[ConceptDictionary] = ..., view: Iterable[View] = ..., derived_from: AASReference[AssetAdministrationShell] | None = None):
+    def __init__(self, asset_real,nameplate,identification_submodel,documentation,service,technicalData,ue5GIdentification,networkAccessRestrictions,ueAttachAndConnectionStatus,qos_monitoring, location, ue5GDatasheet, asset: AASReference[Asset], identification: Identifier, id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, security: Security | None = None, submodel: Set[AASReference[Submodel]] | None = None, concept_dictionary: Iterable[ConceptDictionary] = ..., view: Iterable[View] = ..., derived_from: AASReference[AssetAdministrationShell] | None = None):
        self.asset_real=asset_real
        self.nameplate=nameplate
        self.identification_submodel=identification_submodel
        self.documentation=documentation
        self.service=service
        self.technicalData=technicalData
-       self.simCard=simCard
        self.ue5GIdentification=ue5GIdentification
        self.networkAccessRestrictions=networkAccessRestrictions
        self.ueAttachAndConnectionStatus=ueAttachAndConnectionStatus
        self.qosMonitoring=qos_monitoring
-       self.qosRequired=qosRequired
        self.location=location
        self.ue5GDatasheet=ue5GDatasheet
        super().__init__(asset, identification, id_short, category, description, parent, administration, security, submodel, concept_dictionary, view, derived_from)
     
 #UeAttachAndConnectionStatus Submodel
+
+
+class NewConnectionRequest(Operation):
+    def __init__(self, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.input_variable=input_variable
+        self.output_variable=output_variable
+        self.in_output_variable=in_output_variable
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind=kind
+
+
+class ConnectionModificationRequest(Operation):
+    def __init__(self, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.input_variable=input_variable
+        self.output_variable=output_variable
+        self.in_output_variable=in_output_variable
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind=kind
+
+
+class QoSRequest(Operation):
+    def __init__(self, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.input_variable=input_variable
+        self.output_variable=output_variable
+        self.in_output_variable=in_output_variable
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind=kind
 
 class QosParameters(SubmodelElementCollectionUnordered):
 
@@ -88,11 +134,12 @@ class QosCharacteristics(SubmodelElementCollectionUnordered):
               
 
 class QosProfile(SubmodelElementCollectionUnordered):
-    def __init__(self, qos_parameters, qos_characteristics, id_short: str,
+    def __init__(self, qos_parameters, qos_characteristics, alternativeQosProfile, id_short: str,
                  value: Iterable[SubmodelElement] = (), category: Optional[str] = None, description: Optional[base.LangStringSet] = None, parent: Optional[base.Namespace] = None,
                  semantic_id: Optional[base.Reference] = None, qualifier: Optional[Set[base.Constraint]] = None, kind: base.ModelingKind = base.ModelingKind.INSTANCE):
         self.qosParameters = qos_parameters
         self.qosCharacteristics = qos_characteristics
+        self.alternativeQosProfile=alternativeQosProfile
         self.parent=parent
         self._id_short=id_short
         self.id_short=id_short
@@ -148,58 +195,18 @@ class AlternativeQosProfiles(SubmodelElementCollectionUnordered):
             print("AlternativeQosProfile did not find in the list")
 
 
-class Uplink(SubmodelElementCollectionUnordered):  #Lo tenía junto pero he tenido que cambiarlo porque sino para encontrarlo no había ninguna manera de diferenciar de uplink y downlink
-    def __init__(self, mcstable, cqitable, target_bler, scheduling_type, scheduling_policy, harq_max_num_retransmissions, k_number, power_control_pmax, id_short: str,
-                 value: Iterable[SubmodelElement] = (), category: Optional[str] = None, description: Optional[base.LangStringSet] = None, parent: Optional[base.Namespace] = None,
-                 semantic_id: Optional[base.Reference] = None, qualifier: Optional[Set[base.Constraint]] = None, kind: base.ModelingKind = base.ModelingKind.INSTANCE):
-        self.mcsTable = mcstable
-        self.cqiTable = cqitable
-        self.targetBLER = target_bler
-        self.schedulingType = scheduling_type
-        self.schedulingPolicy = scheduling_policy
-        self.harqMaximumNumberOfRetransmissions = harq_max_num_retransmissions
-        self.kNumber_ul = k_number
-        self.powerControlPmax = power_control_pmax
-        self.parent=parent
-        self._id_short=id_short
-        self.id_short=id_short
-        self.value=value
-        self.category=category
-        self.description=description
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind= kind
-             
-
-class Downlink(SubmodelElementCollectionUnordered):
-    def __init__(self, mcstable, cqitable, target_bler, scheduling_type, scheduling_policy, harq_max_num_retransmissions, k_number, power_control_pmax, id_short: str,
-                 value: Iterable[SubmodelElement] = (), category: Optional[str] = None, description: Optional[base.LangStringSet] = None, parent: Optional[base.Namespace] = None,
-                 semantic_id: Optional[base.Reference] = None, qualifier: Optional[Set[base.Constraint]] = None, kind: base.ModelingKind = base.ModelingKind.INSTANCE):
-        self.mcsTable = mcstable
-        self.cqiTable = cqitable
-        self.targetBLER = target_bler
-        self.schedulingType = scheduling_type
-        self.schedulingPolicy = scheduling_policy
-        self.harqMaximumNumberOfRetransmissions = harq_max_num_retransmissions
-        self.kNumber_ul = k_number
-        self.powerControlPmax = power_control_pmax
-        self.parent=parent
-        self._id_short=id_short
-        self.id_short=id_short
-        self.value=value
-        self.category=category
-        self.description=description
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind= kind
-             
-
 class RRMParameters(SubmodelElementCollectionUnordered):
-    def __init__(self, uplink, downlink, id_short: str,
+    def __init__(self, mcstable, cqitable, target_bler, scheduling_type, scheduling_policy, harq_max_num_retransmissions, k_number, power_control_pmax, id_short: str,
                  value: Iterable[SubmodelElement] = (), category: Optional[str] = None, description: Optional[base.LangStringSet] = None, parent: Optional[base.Namespace] = None,
                  semantic_id: Optional[base.Reference] = None, qualifier: Optional[Set[base.Constraint]] = None, kind: base.ModelingKind = base.ModelingKind.INSTANCE):
-        self.uplink = uplink
-        self.downlink = downlink
+        self.mcsTable = mcstable
+        self.cqiTable = cqitable
+        self.targetBLER = target_bler
+        self.schedulingType = scheduling_type
+        self.schedulingPolicy = scheduling_policy
+        self.harqMaximumNumberOfRetransmissions = harq_max_num_retransmissions
+        self.kNumber_ul = k_number
+        self.powerControlPmax = power_control_pmax
         self.parent=parent
         self._id_short=id_short
         self.id_short=id_short
@@ -213,12 +220,12 @@ class RRMParameters(SubmodelElementCollectionUnordered):
 
 
 class QosFlowStatus(SubmodelElementCollectionUnordered):                      
-    def __init__(self, qfi, qos_profile, alternative_qos_profiles, rrm_parameters, id_short: str,
+    def __init__(self, qfi, qos_profileRequested, qos_profileGuaranteed, rrm_parameters, id_short: str,
                  value: Iterable[SubmodelElement] = (), category: Optional[str] = None, description: Optional[base.LangStringSet] = None, parent: Optional[base.Namespace] = None,
                  semantic_id: Optional[base.Reference] = None, qualifier: Optional[Set[base.Constraint]] = None, kind: base.ModelingKind = base.ModelingKind.INSTANCE):
         self.qfi = qfi              
-        self.qosProfile = qos_profile
-        self.alternativeQosProfiles = alternative_qos_profiles
+        self.qosProfileRequested = qos_profileRequested
+        self.qosProfileGuaranteed = qos_profileGuaranteed
         self.rrmParameters = rrm_parameters
         self.parent=parent
         self._id_short=id_short
@@ -305,7 +312,7 @@ class PDUSessionStatusList(SubmodelElementCollectionUnordered):
 
 
 class UeAttachAndConnectionStatus(Submodel):
-    def __init__(self,UeAttached, RRC_state,pdu_session_list, technology, cellID, identification: base.Identifier,
+    def __init__(self,UeAttached, RRC_state,pdu_session_list, newConnectionRequest, connectionModificationRequest, qoSRequest, identification: base.Identifier,
                  submodel_element: Iterable[SubmodelElement] = (),
                  id_short: str = "",
                  category: Optional[str] = None,
@@ -318,8 +325,9 @@ class UeAttachAndConnectionStatus(Submodel):
         self.pduSessionList = pdu_session_list
         self.ueAttached= UeAttached
         self.rrcState= RRC_state
-        self.technology=technology
-        self.cellID=cellID
+        self.newConnectionRequest=newConnectionRequest
+        self.connectionModificationRequest=connectionModificationRequest
+        self.qoSRequest=qoSRequest
         self.parent=parent
         self.identification=identification
         self.submodel_element=submodel_element
@@ -589,7 +597,9 @@ class QosQuery(Operation):
         result = None  #This will change
         return result
 
-class ConnectivityQosMonitoringSubscription(Operation):
+
+
+class EventNotificationAction(Operation):
     def __init__(self, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.parent=parent
         self._id_short=id_short
@@ -604,29 +614,6 @@ class ConnectivityQosMonitoringSubscription(Operation):
         self._kind=kind
         
 
-    def subscribe(self, qos_parameters, report_indicator, trigger_event):
-
-        notification_message = None  
-        return notification_message
-
-class ConnectivityQosMonitoringResultsAndEvents(Operation):
-    def __init__(self, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-        self.parent=parent
-        self._id_short=id_short
-        self.id_short=id_short
-        self.input_variable=input_variable
-        self.output_variable=output_variable
-        self.in_output_variable=in_output_variable
-        self.category=category
-        self.description=description
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind=kind
-        
-    def process_event(self, event_notification_message):
-
-        report = None  
-        return report
 
 class ListOfMonitoringSubscriptions(SubmodelElementCollectionUnordered):
     def __init__(self, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
@@ -654,13 +641,13 @@ class ListOfMonitoringSubscriptions(SubmodelElementCollectionUnordered):
 
 
 class QosMonitoring(Submodel):
-        def __init__(self, general_kpis, signal_level, parameters_pertaining_connections, qos_query, conecqosmonsubs,conecqosmonresandev,listOfMonitoringSubscriptions, updateTime, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        def __init__(self, general_kpis, signal_level, parameters_pertaining_connections, qos_query, subscriptionRequest,eventNotificationAction,listOfMonitoringSubscriptions, updateTime, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
             self.generalKeyPerformanceIndicators = general_kpis
             self.signalLevel = signal_level
             self.parametersPertainingConnections = parameters_pertaining_connections
             self.qosQuery=qos_query
-            self.connectivityQosMonitoringSubscription=conecqosmonsubs
-            self.connectivityQosMonitoringResultsAndEvents=conecqosmonresandev
+            self.subscriptionRequest=subscriptionRequest
+            self.eventNotificationAction=eventNotificationAction
             self.listOfSubscriptions=listOfMonitoringSubscriptions
             self.updateTime=updateTime
             self.parent=parent
@@ -675,108 +662,8 @@ class QosMonitoring(Submodel):
             self._kind= kind
             
 
-
-
-
-#QosRequired Submodel
-
-class QosRequiredN(SubmodelElementCollectionUnordered):
-    def __init__(self, qfi, qos_profile, alternative_qos_profile, id_short: str,
-                 value: Iterable[SubmodelElement] = (), category: Optional[str] = None, description: Optional[base.LangStringSet] = None, parent: Optional[base.Namespace] = None,
-                 semantic_id: Optional[base.Reference] = None, qualifier: Optional[Set[base.Constraint]] = None, kind: base.ModelingKind = base.ModelingKind.INSTANCE):
         
-        self.qfi = qfi
-        self.qos_profile = qos_profile
-        self.alternative_qos_profile = alternative_qos_profile
-        self.parent=parent
-        self._id_short=id_short
-        self.id_short=id_short
-        self.value=value
-        self.category=category
-        self.description=description
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind= kind
-        
-
-class ListOfQosRequired(SubmodelElementCollectionUnordered):
-    def __init__(self, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-        self.listOfQosRequired = []
-        self.parent=parent
-        self._id_short=id_short
-        self.id_short=id_short
-        self.value=value
-        self.category=category
-        self.description=description
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind= kind
-             
-
-    def add_QosRequiredN(self, QosRequiredN):                                           
-        self.listOfQosRequired.append(QosRequiredN)
-
-    def remove_subscription(self, QosRequiredN):
-        if QosRequiredN in self.listOfQosRequired:
-            self.listOfQosRequired.remove(QosRequiredN)
-            
-        else:
-            print("QosRequired did not find in the list")
-
-class QosRequired(Submodel):
-    def __init__(self, listOfQosRequired, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-            self.list_of_qos_required =listOfQosRequired
-            self.parent=parent
-            self.identification=identification
-            self.submodel_element=submodel_element
-            self.id_short=id_short
-            self.category=category
-            self.description=description
-            self.administration=administration
-            self.semantic_id=semantic_id
-            self.qualifier=qualifier
-            self._kind= kind
-        
-#Location Submodel
-    
-class LocationEventSubscription(Operation):
-    def __init__(self, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-        self.parent=parent
-        self._id_short=id_short
-        self.id_short=id_short
-        self.input_variable=input_variable
-        self.output_variable=output_variable
-        self.in_output_variable=in_output_variable
-        self.category=category
-        self.description=description
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind=kind
-        
-
-    def subscribe(self, qos_parameters, report_indicator, trigger_event):
-
-        notification_message = None  
-        return notification_message
-
-class LocationResultsAndEvents(Operation):
-    def __init__(self, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-        self.parent=parent
-        self._id_short=id_short
-        self.id_short=id_short
-        self.input_variable=input_variable
-        self.output_variable=output_variable
-        self.in_output_variable=in_output_variable
-        self.category=category
-        self.description=description
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind=kind
-        
-    def process_event(self, event_notification_message):
-
-        report = None  
-        return report
+#Location Submodel    
 
 class ListOfLocalizationSubscriptions(SubmodelElementCollectionUnordered):
     def __init__(self, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
@@ -803,7 +690,7 @@ class ListOfLocalizationSubscriptions(SubmodelElementCollectionUnordered):
             print("Subscription did not find in the list")
 
 class LocationUE(Submodel):
-    def __init__(self, xPosition, yPosition,zPosition,speed, aceleration, lcs_qos_class, accuracy, response_time, list_of_subscriptions,locevsub,locresandev, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, xPosition, yPosition,zPosition,speed, aceleration, lcs_qos_class, accuracy, response_time, list_of_subscriptions,subcriptionRequest,eventNotificationAction, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.xPosition = xPosition
         self.yPosition = yPosition
         self.zPosition = zPosition
@@ -813,8 +700,8 @@ class LocationUE(Submodel):
         self.accuracy = accuracy
         self.responseTime = response_time
         self.listOfSubscriptions= list_of_subscriptions
-        self.locationEventSubscription=locevsub
-        self.locationResultsAndEvents=locresandev
+        self.subcriptionRequest=subcriptionRequest
+        self.eventNotificationAction=eventNotificationAction
         self.parent=parent
         self.identification=identification
         self.submodel_element=submodel_element
@@ -1066,9 +953,8 @@ class TechnicalData(Submodel):
 
 #UE5GDataSheet
 class UEChannelBandwidth(SubmodelElementCollectionUnordered):
-    def __init__(self, maxtxbw, mingbandtxbwconfig,id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, maxtxbw, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.maximumTransmissionBandwidth= maxtxbw
-        self.minimumGuardbandAndTransmissionBandwidthConfiguration=mingbandtxbwconfig
         self.parent=parent
         self._id_short=id_short
         self.id_short=id_short
@@ -1152,40 +1038,21 @@ class UE5GDataSheet(Submodel):
         self.semantic_id=semantic_id
         self.qualifier=qualifier
         self._kind= kind
-             
-
-#SIMCard Submodel
-class SIMCard(Submodel):
-    def __init__(self,imsi,iccid,pin,spn,authenticationkey, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-        self.imsi=imsi
-        self.iccid=iccid
-        self.pin=pin
-        self.spn=spn
-        self.authenticationKey=authenticationkey
-        self.parent=parent
-        self.identification=identification
-        self.submodel_element=submodel_element
-        self.id_short=id_short
-        self.category=category
-        self.description=description
-        self.administration=administration
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind= kind
-                
-
 
 
 #Ue5GIdentification Submodel
 class Ue5GIdentification(Submodel):
-    def __init__(self, pei,gpsi,authcertificate,certificatestatus, ipAddress, macAddress, imei, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, pei,gpsi,authcertificate,certificatestatus, ipAddress, macAddress, imsi,spn, pin, iccid, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.permanentEquipmentIdentifier=pei
         self.ueIdentityGPSI=gpsi
         self.authenticationCertificate=authcertificate
         self.certificateStatus=certificatestatus
         self.ipAddress=ipAddress
         self.macAddress=macAddress
-        self.imei=imei
+        self.imsi=imsi
+        self.spn=spn
+        self.pin=pin
+        self.iccid=iccid
         self.parent=parent
         self.identification=identification
         self.submodel_element=submodel_element
@@ -1212,7 +1079,7 @@ class Network5G(Asset):
 
 #Network 5G AAS
 class AASNetwork5G(AssetAdministrationShell):
-    def __init__(self, asset_real,nameplate,identification_submodel,documentation,service, technicalData, npn5GNWIdentity, assetServiceRegistry, tsnCapabilities, network5GDataSheet, virtualsNetwork, connectivity, qosPerformance, location, dataAnalytics, asset: AASReference[Asset], identification: Identifier, id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, security: Security | None = None, submodel: Set[AASReference[Submodel]] | None = None, concept_dictionary: Iterable[ConceptDictionary] = ..., view: Iterable[View] = ..., derived_from: AASReference[AssetAdministrationShell] | None = None):
+    def __init__(self, asset_real,nameplate,identification_submodel,documentation,service, technicalData, npn5GNWIdentity, assetServiceRegistry, tsnCapabilities, network5GDataSheet, virtualsNetwork, connectivity, qosPerformance, location, qosPrediction, asset: AASReference[Asset], identification: Identifier, id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, security: Security | None = None, submodel: Set[AASReference[Submodel]] | None = None, concept_dictionary: Iterable[ConceptDictionary] = ..., view: Iterable[View] = ..., derived_from: AASReference[AssetAdministrationShell] | None = None):
        self.listOfUeAAS = []
        self.asset_real=asset_real                               
        self.nameplate=nameplate                                 
@@ -1228,7 +1095,7 @@ class AASNetwork5G(AssetAdministrationShell):
        self.connectivity=connectivity                           
        self.qosPerformance=qosPerformance                       
        self.location=location                                   
-       self.dataAnalytics=dataAnalytics                         
+       self.qosPrediction=qosPrediction                         
        super().__init__(asset, identification, id_short, category, description, parent, administration, security, submodel, concept_dictionary, view, derived_from)        
      
 
@@ -1247,10 +1114,61 @@ class AASNetwork5G(AssetAdministrationShell):
 
 
 
-#DataAnalytics Submodel
-class DataAnalytics(Submodel):
-    def __init__(self, analytics, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-        self.analytics=analytics
+#QosPrediction Submodel
+
+class ListOfQosPredictionEvents(SubmodelElementCollectionUnordered):
+    def __init__(self, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.events = []
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.value=value
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind= kind
+          
+
+    def add_event(self, event):                                           
+        self.events.append(event)
+ 
+    def remove_event(self, event):
+        if event in self.events:
+            self.events.remove(event)
+            
+        else:
+            print("Event did not find in the list")
+
+class ListOfQosPredictionSubscriptions(SubmodelElementCollectionUnordered):
+    def __init__(self, events, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.subscriptions = []
+        self.events=events
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.value=value
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind= kind
+             
+
+    def add_subscription(self, subscription):                                           
+        self.subscriptions.append(subscription)
+ 
+    def remove_subscription(self, subscription):
+        if subscription in self.subscriptions:
+            self.subscriptions.remove(subscription)
+            
+        else:
+            print("Subscription did not find in the list")
+
+
+class QosPrediction(Submodel):
+    def __init__(self, listOfSubscriptions, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.listOfSubscriptions=listOfSubscriptions
         self.parent=parent
         self.identification=identification
         self.submodel_element=submodel_element
@@ -1265,9 +1183,6 @@ class DataAnalytics(Submodel):
 
 
 #Location Submodel
-
- 
-
 class ListOfNetworkLocationSubscriptions(SubmodelElementCollectionUnordered):
     def __init__(self, events, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.subscriptions = []
@@ -1319,12 +1234,12 @@ class ListOfNetworkLocationEvents(SubmodelElementCollectionUnordered):
 
 
 class ConnectedUe(SubmodelElementCollectionUnordered):
-    def __init__(self, xPosition, yPosition, zPosition, speed, aceleration, lcs_qos_class, accuracy, response_time, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, xPosition, yPosition, zPosition, speed, acceleration, lcs_qos_class, accuracy, response_time, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.xPosition = xPosition
         self.yPosition = yPosition
         self.zPosition = zPosition
         self.speed=speed
-        self.aceleration=aceleration
+        self.acceleration=acceleration
         self.lcsQosClass = lcs_qos_class
         self.accuracy = accuracy
         self.responseTime = response_time
@@ -1367,7 +1282,7 @@ class ListOfConnectedUes(SubmodelElementCollectionUnordered):
             print("UE did not find in the list")
 
 
-class SubscriptionRequestFunction(Operation):
+class SubscriptionRequest(Operation):
     def __init__(self, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.parent=parent
         self._id_short=id_short
@@ -1384,9 +1299,9 @@ class SubscriptionRequestFunction(Operation):
     
 
 class Location(Submodel):
-    def __init__(self, listOfConnectedUes, subscriptionRequestFunction, listOfSubscriptions, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, listOfConnectedUes, subscriptionRequest, listOfSubscriptions, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.listOfConnectedUes= listOfConnectedUes
-        self.subscriptionRequestFunction=subscriptionRequestFunction
+        self.subscriptionRequest=subscriptionRequest
         self.listOfSubscriptions=listOfSubscriptions
         self.parent=parent
         self.identification=identification
@@ -1444,7 +1359,7 @@ class AssetServiceRegistry(Submodel):
         
 
 #Network5GDataSheet Submodel
-class InterfacesCapacityMbps(SubmodelElementCollectionUnordered):
+class Links(SubmodelElementCollectionUnordered):
     def __init__(self, n1, n2, n3, n4, n5, n6, rx, naf, npcf, nsmf, namf, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.n1=n1
         self.n2=n2
@@ -1613,10 +1528,10 @@ class ListOfRanNodes(SubmodelElementCollectionUnordered):
 
 
 class NetworkTopology(SubmodelElementCollectionUnordered):
-    def __init__(self, listOfRanNodes, listOfCN, interfacesCapacityMbps, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, listOfRanNodes, listOfCN, links, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.listOfRanNodes=listOfRanNodes
         self.listOfCN= listOfCN
-        self.interfacesCapacityMbps=interfacesCapacityMbps
+        self.links=links
         self.parent=parent
         self._id_short=id_short
         self.id_short=id_short
@@ -1656,13 +1571,15 @@ class TransmissionModeCharacteristics(SubmodelElementCollectionUnordered):
         self._kind= kind
 
 class Network5GDataSheet(Submodel):
-    def __init__(self, releaseCompatibility3GPP, networkProtocols, coverageRange, supportedSpectrum, supportedTransmissionPower, transmissionModeCharacteristics, networkTopology, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, releaseCompatibility3GPP, supportedSpectrumBand, spectrumBandUsed, maximumDLDataRate, maximumULDataRate, supportedNetworkProtocols,  supportedTransmissionPower, transmissionModeCharacteristics, networkTopology, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.releaseCompatibility3GPP=releaseCompatibility3GPP
-        self.networkProtocols=networkProtocols
-        self.coverageRange=coverageRange
-        self.supportedSpectrum=supportedSpectrum
-        self.supportedTransmissionPower=supportedTransmissionPower
+        self.supportedSpectrumBand=supportedSpectrumBand
+        self.spectrumBandUsed=spectrumBandUsed
+        self.maximumDLDataRate=maximumDLDataRate
+        self.maximumULDataRate=maximumULDataRate
+        self.supportedNetworkProtocols=supportedNetworkProtocols
         self.transmissionModeCharacteristics=transmissionModeCharacteristics
+        self.supportedTransmissionPower=supportedTransmissionPower
         self.networkTopology=networkTopology
         self.parent=parent
         self.identification=identification
@@ -1677,6 +1594,20 @@ class Network5GDataSheet(Submodel):
 
 
 #TSNCapabilities Submodel
+class NetworkSliceReconfiguration(Operation):
+    def __init__(self, qosRequested, qosGuaranteed, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.input_variable=input_variable
+        self.output_variable=output_variable
+        self.in_output_variable=in_output_variable
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind=kind
+
 
 class TSCAI(SubmodelElementCollectionUnordered):
     def __init__(self, survivalTime, packetArrivalTime, periodicity, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
@@ -1695,18 +1626,14 @@ class TSCAI(SubmodelElementCollectionUnordered):
 
 
 class TsnFlowN(SubmodelElementCollectionUnordered):
-    def __init__(self, destinationIP, destinationMacAddress, streamId, qosProfileAssociated, tsnTrafficClasses, tsnTrafficPriority, vlanID, vlanPriority, maximumLatency, reliability, port, tscai, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, destinationIP, destinationMacAddress, streamId, qosProfileAssociated, vlanID, maximumLatency, reliability, tscai, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.destinationIP=destinationIP
         self.destinationMacAddress=destinationMacAddress
         self.streamId=streamId
         self.qosProfileAssociated=qosProfileAssociated
-        self.tsnTrafficClasses=tsnTrafficClasses
-        self.tsnTrafficPriority=tsnTrafficPriority
         self.vlanID=vlanID
-        self.vlanPriority=vlanPriority
         self.maximumLatency=maximumLatency
         self.reliability=reliability
-        self.port=port
         self.tscai=tscai
         self.parent=parent
         self._id_short=id_short
@@ -1783,15 +1710,15 @@ class ListOfPorts(SubmodelElementCollectionUnordered):
         else:
             print("Port did not find in the list")
 
-class Parameters5GS(SubmodelElementCollectionUnordered):
-    def __init__(self,  bridgeID, listOfPorts, system5GBridgeDelay, streamFilters, ueDsTtResidenceTime, propagationDelayPerPort, timeSynchronizationStatus, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+class Bridge5GSConfiguration(SubmodelElementCollectionUnordered):
+    def __init__(self,  bridgeID, listOfPorts, streamFilters, ueDsTtResidenceTime, propagationDelayPerPort, timeSynchronizationStatus, trafficClasses, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.bridgeID=bridgeID
         self.listOfPorts=listOfPorts
-        self.system5GBridgeDelay=system5GBridgeDelay
         self.streamFilters=streamFilters
         self.ueDsTtResidenceTime=ueDsTtResidenceTime
         self.propagationDelayPerPort=propagationDelayPerPort
         self.timeSynchronizationStatus=timeSynchronizationStatus
+        self.trafficClasses=trafficClasses
         self.parent=parent
         self._id_short=id_short
         self.id_short=id_short
@@ -1804,8 +1731,8 @@ class Parameters5GS(SubmodelElementCollectionUnordered):
 
 
 class Bridge5GS(SubmodelElementCollectionUnordered):
-    def __init__(self,  parameters5GS, tsnFlowList, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-        self.parameters5GS=parameters5GS
+    def __init__(self,  bridge5GSConfiguration, tsnFlowList, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.bridge5GSConfiguration=bridge5GSConfiguration
         self.tsnFlowList=tsnFlowList
         self.parent=parent
         self._id_short=id_short
@@ -1818,8 +1745,9 @@ class Bridge5GS(SubmodelElementCollectionUnordered):
         self._kind= kind
 
 class TSNCapabilities(Submodel):
-    def __init__(self, bridge5GS, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, bridge5GS, bridge5GSDelay, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.bridge5GS=bridge5GS
+        self.bridge5GSDelay=bridge5GSDelay
         self.parent=parent
         self.identification=identification
         self.submodel_element=submodel_element
@@ -1992,7 +1920,68 @@ class VirtualsNetwork(Submodel):
 
 
 #Connectivity Submodel
-class QosMappingFunction(Operation):
+
+class ModifyConnection(Operation):
+    def __init__(self, qosRequested, qosGuaranteed, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.input_variable=input_variable
+        self.output_variable=output_variable
+        self.in_output_variable=in_output_variable
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind=kind
+
+
+class EstablishConnection(Operation):
+    def __init__(self, qosRequested, qosGuaranteed, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.input_variable=input_variable
+        self.output_variable=output_variable
+        self.in_output_variable=in_output_variable
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind=kind
+
+
+class SetRANConfiguration(Operation):
+    def __init__(self, qosRequested, qosGuaranteed, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.input_variable=input_variable
+        self.output_variable=output_variable
+        self.in_output_variable=in_output_variable
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind=kind
+
+
+class GetRANConfiguration(Operation):
+    def __init__(self, qosRequested, qosGuaranteed, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+        self.parent=parent
+        self._id_short=id_short
+        self.id_short=id_short
+        self.input_variable=input_variable
+        self.output_variable=output_variable
+        self.in_output_variable=in_output_variable
+        self.category=category
+        self.description=description
+        self.semantic_id=semantic_id
+        self.qualifier=qualifier
+        self._kind=kind
+
+
+class QosMapping(Operation):
     def __init__(self, qosRequested, qosGuaranteed, id_short: str, input_variable: List[OperationVariable] | None = None, output_variable: List[OperationVariable] | None = None, in_output_variable: List[OperationVariable] | None = None, category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.qosRequested=qosRequested
         self.qosGuaranteed=qosGuaranteed
@@ -2095,12 +2084,12 @@ class QosFlowConnectivityList(SubmodelElementCollectionUnordered):
             print("QosFlow did not find in the list")
 
 class PDUSessionConnectivity(SubmodelElementCollectionUnordered):
-    def __init__(self,IPAddress,ue, ddnDestintation, linkDirection, qos_flow_list, id_short: str,
+    def __init__(self,IPAddress,ue, dnDestintation, linkDirection, qos_flow_list, id_short: str,
                  value: Iterable[SubmodelElement] = (), category: Optional[str] = None, description: Optional[base.LangStringSet] = None, parent: Optional[base.Namespace] = None,
                  semantic_id: Optional[base.Reference] = None, qualifier: Optional[Set[base.Constraint]] = None, kind: base.ModelingKind = base.ModelingKind.INSTANCE):
         self.ipAddress=IPAddress 
         self.ue=ue
-        self.ddnDestintation=ddnDestintation
+        self.dnDestintation=dnDestintation
         self.linkDirection=linkDirection
         self.qosFlowList = qos_flow_list
         self.parent=parent
@@ -2142,25 +2131,10 @@ class PDUSessionConnectivityList(SubmodelElementCollectionUnordered):
 
 
 
-class UeID(SubmodelElementCollectionUnordered):
+class UEAttachedN(SubmodelElementCollectionUnordered):
     def __init__(self,  pei, gpsi, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.pei=pei
         self.gpsi=gpsi
-        self.parent=parent
-        self._id_short=id_short
-        self.id_short=id_short
-        self.value=value
-        self.category=category
-        self.description=description
-        self.semantic_id=semantic_id
-        self.qualifier=qualifier
-        self._kind= kind
-
-
-class UeAttachedN(SubmodelElementCollectionUnordered):
-    def __init__(self,  ueID, ueDescription, id_short: str, value: Iterable[SubmodelElement] = ..., category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
-        self.ueID=ueID
-        self.ueDescription=ueDescription
         self.parent=parent
         self._id_short=id_short
         self.id_short=id_short
@@ -2199,13 +2173,14 @@ class UEAttachedList(SubmodelElementCollectionUnordered):
             print("UE did not find in the list")
 
 class Connectivity(Submodel):
-    def __init__(self, uesAttachedList, pduSessionList, qosMappingFunction, getRANConfiguration, setRANConfiguration, establishingConnectionsFunction, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, uesAttachedList, pduSessionList, qosMapping, getRANConfiguration, setRANConfiguration, establishConnection, modifyConnection, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.uesAttachedList=uesAttachedList
         self.pduSessionList=pduSessionList
-        self.qosMappingFunction=qosMappingFunction
+        self.qosMapping=qosMapping
         self.getRANConfiguration=getRANConfiguration
         self.setRANConfiguration=setRANConfiguration
-        self.establishingConnectionsFunction=establishingConnectionsFunction
+        self.establishConnection=establishConnection
+        self.modifyConnection=modifyConnection
         self.parent=parent
         self.identification=identification
         self.submodel_element=submodel_element
@@ -2632,14 +2607,15 @@ class PDUSessionPerformanceList(SubmodelElementCollectionUnordered):
 
 
 class QosPerformance(Submodel):
-    def __init__(self, logicalNetworkList, parameterspertainingConnections, listOfSubscriptions, subscriptionRequestFunction, estimatePacketTransmissionPerformanceFunction, estimateNetworkPerformanceFunction, updateTime, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
+    def __init__(self, logicalNetworkList, parameterspertainingConnections, listOfSubscriptions, subscriptionRequest, updateTime, performanceOfAPacketTX, performanceOfAQosFlow, performanceOfAPDUSession, identification: Identifier, submodel_element: Iterable[SubmodelElement] = ..., id_short: str = "", category: str | None = None, description: LangStringSet | None = None, parent: Namespace | None = None, administration: AdministrativeInformation | None = None, semantic_id: Reference | None = None, qualifier: Set[Constraint] | None = None, kind: ModelingKind = base.ModelingKind.INSTANCE):
         self.logicalNetworkList=logicalNetworkList
         self.parameterspertainingConnections=parameterspertainingConnections
         self.listOfSubscriptions=listOfSubscriptions
-        self.subscriptionRequestFunction=subscriptionRequestFunction
-        self.estimatePacketTransmissionPerformanceFunction=estimatePacketTransmissionPerformanceFunction
-        self.estimateNetworkPerformanceFunction=estimateNetworkPerformanceFunction
+        self.subscriptionRequest=subscriptionRequest
         self.updateTime=updateTime
+        self.performanceOfAPacketTX=performanceOfAPacketTX
+        self.performanceOfAQosFlow=performanceOfAQosFlow
+        self.performanceOfAPDUSession=performanceOfAPDUSession
         self.parent=parent
         self.identification=identification
         self.submodel_element=submodel_element
