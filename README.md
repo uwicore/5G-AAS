@@ -1,5 +1,6 @@
 # 5G-AAS
 This code implements the Asset Administration Shell (AAS) of a 5G User Equipment (UE) and the AAS of a 5G Network (NW) as presented in:
+
 Jorge Gómez-Jerez, Jorge Cañete-Martín, M.Carmen Lucas-Estañ, Javier Gozalvez, “5G UE and Network Asset Administration Shells for the integration of 5G and Industry 4.0 Systems”, submitted to IEEE International Conference on Emerging Technologies and Factory Automation (ETFA 2024), 10th-13th September 2024, Padova, Italy.
 
 The 5G AAS has been defined and implemented at the UWICORE laboratory of the Universidad Miguel Hernandez de Elche (Spain). 
