@@ -78,7 +78,7 @@ If you want to create more than one AAS for the UE, you can use the AASX Package
 # Contact 
 Feel free to contact the corresponding authors M.Carmen Lucas-Estañ (m.lucas@umh.es) or Javier Gozálvez (j.gozalvez@umh.es) if you have any question about the code.
 # Licence 
-This code is protected under the MIT license.
+This code is protected under the GNU license.
 # Acknowledgements
 This work has been funded by European Union's Horizon Europe Research and Innovation programme under the Re4dy project (No 101058384), by MCIN/AEI/10.13039/ 501100011033 and the “European Union NextGenerationEU
 /PRTR” (TED2021-130436B-I00) and by Generalitat Valenciana (CIGE/2022/17), and UMH’s Vicerrectorado de Investigación grants (VIPROAS23/11 and 2024).
