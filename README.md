@@ -78,7 +78,41 @@ If you want to create more than one AAS for the UE, you can use the AASX Package
 # Contact 
 Feel free to contact the corresponding authors M.Carmen Lucas-Estañ (m.lucas@umh.es) or Javier Gozálvez (j.gozalvez@umh.es) if you have any question about the code.
 # Licence 
-This code is protected under the GNU license.
+This code is protected under the MIT license.
+
+MIT License
+
+Copyright (c) 2024 Universidad Miguel Hernández de Elche
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+With respect to Eclipse BaSyx
+========================
+The BaSyx Python SDK project is licensed under the terms of the MIT License.
+https://github.com/eclipse-basyx/basyx-python-sdk?tab=MIT-1-ov-file
+
+
+With respect to AASX Package Explorer
+========================
+The AASX Package Explorer is licensed under the Apache License 2.0.
+https://github.com/eclipse-aaspe/package-explorer?tab=License-1-ov-file 
 # Acknowledgements
 This work has been funded by European Union's Horizon Europe Research and Innovation programme under the Re4dy project (No 101058384), by MCIN/AEI/10.13039/ 501100011033 and the “European Union NextGenerationEU
 /PRTR” (TED2021-130436B-I00) and by Generalitat Valenciana (CIGE/2022/17), and UMH’s Vicerrectorado de Investigación grants (VIPROAS23/11 and 2024).
