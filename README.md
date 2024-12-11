@@ -77,7 +77,7 @@ If you want to create more than one AAS for the UE, you can use the AASX Package
 
 # Contact 
 Feel free to contact the corresponding authors M.Carmen Lucas-Estañ (m.lucas@umh.es) or Javier Gozálvez (j.gozalvez@umh.es) if you have any question about the code.
-# Licence 
+# License 
 This code is protected under the MIT license.
 
 MIT License
