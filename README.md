@@ -5,6 +5,11 @@ Jorge Gómez-Jerez, Jorge Cañete-Martín, M.Carmen Lucas-Estañ, Javier Gozalve
 
 The 5G AAS has been defined and implemented at the UWICORE laboratory of the Universidad Miguel Hernandez de Elche (Spain). 
 
+The 5G AASs that we are releasing have been designed following the 5G-ACIA and Plattform Industrie 4.0 guidelines as well as 3GPP standards. They provide and expose the data and capabilities of 5G necessary to facilitate the integration of 5G with Industry 4.0 systems and applications.
+We demonstrate the value and interest of this integration in this publication:
+Jorge Cañete-Martín, Jorge Gómez-Jerez , M.Carmen Lucas-Estañ, Javier Gozalvez, Fernando Ubis, " Integration of 5G and Industrial Digital Models: A Case Study with AGVs ", IEEE International Conference on Emerging Technologies and Factory Automation (ETFA 2024), 10th-13th September 2024, Padova, Italy.
+This paper shows how the integration of the 5G AASs with industrial digital models provide a powerful tool for analyzing how the deployment and configuration of 5G networks impact the operation and productivity of industrial processes, highlighting the importance and necessity of integrating 5G models into industrial digital models for their joint design and optimization. The industrial and 5G digital models are interconnected using OPC-UA, and we used the Visual Components software platform to build our industrial digital models.
+
 In order to comply with our sponsor guidelines, we would appreciate if any publication using this code references the above-mentioned publication.
 
 # Abstract
