@@ -104,15 +104,17 @@ SOFTWARE.
 
 
 With respect to Eclipse BaSyx
-========================
+
 The BaSyx Python SDK project is licensed under the terms of the MIT License.
 https://github.com/eclipse-basyx/basyx-python-sdk?tab=MIT-1-ov-file
 
 
 With respect to AASX Package Explorer
-========================
+
 The AASX Package Explorer is licensed under the Apache License 2.0.
 https://github.com/eclipse-aaspe/package-explorer?tab=License-1-ov-file 
+
+
 # Acknowledgements
 This work has been funded by European Union's Horizon Europe Research and Innovation programme under the Re4dy project (No 101058384), by MCIN/AEI/10.13039/ 501100011033 and the “European Union NextGenerationEU
 /PRTR” (TED2021-130436B-I00) and by Generalitat Valenciana (CIGE/2022/17), and UMH’s Vicerrectorado de Investigación grants (VIPROAS23/11 and 2024).
